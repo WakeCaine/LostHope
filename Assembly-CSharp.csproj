@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{28D8137C-3527-6EEB-C8E3-6C040B48681B}</ProjectGuid>
+    <ProjectGuid>{752D73E6-AACA-5624-85D5-4C984145C4D7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -61,6 +61,9 @@
      <Compile Include="Assets\_Scripts\GameManager.cs" />
      <Compile Include="Assets\_Scripts\Loader.cs" />
      <Compile Include="Assets\_Scripts\SoundManager.cs" />
+     <Compile Include="Assets\_Scripts\UI\SoundManagerMenu.cs" />
+     <Compile Include="Assets\_Scripts\UI\TextTyper.cs" />
+     <Compile Include="Assets\_Scripts\UI\UIManager.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\Enemy.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\MovingObject.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\Player.cs" />

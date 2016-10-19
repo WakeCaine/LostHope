@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 	public float levelStartDelay = 2f;
 	public float turnDelay = .1f;
 	public static GameManager instance = null;
+	public static bool LevelLoadCalled = false;
 	public BoardManager boardScript;
 	public int playerFoodPoints = 100;
 	[HideInInspector] public bool playersTurn = true;
@@ -26,16 +27,23 @@ public class GameManager : MonoBehaviour
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-
 		DontDestroyOnLoad (gameObject);
+		LevelLoadCalled = false;
 		enemies = new List<Enemy> ();
 		boardScript = GetComponent<BoardManager> ();
+		Debug.Log ("Awake");
 		InitGame ();
 	}
 
 	private void OnLevelWasLoaded (int index)
 	{
+		if (!LevelLoadCalled) {
+			print ("LevelLoaded called");
+			LevelLoadCalled = true;//flip the flag
+			return;
+		}
 		level++;
+		Debug.Log ("GameManager is initiated");
 		InitGame ();
 	}
 
@@ -44,6 +52,7 @@ public class GameManager : MonoBehaviour
 		doingSetup = true;
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
+		Debug.Log ("WHY");
 		levelText.text = "Day " + level;
 		levelImage.SetActive (true);
 		Invoke ("HideLevelImage", levelStartDelay);
