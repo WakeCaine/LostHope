@@ -5,6 +5,7 @@
 /[Bb]uilds/
 /LostHope_Data/
 /Assets/Completed*
+/[Ee]xported[Oo]bj/
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -22,7 +23,7 @@ sysinfo.txt
 # ============================================= #
 # Visual Studio / MonoDevelop / Rider generated #
 # ============================================= #
-[Ee]xported[Oo]bj/
+
 .vs/
 /*.userprefs
 /*.csproj
