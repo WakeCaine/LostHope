@@ -62,7 +62,6 @@
      <Compile Include="Assets\_Scripts\UnitControllers\Enemy.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\MovingObject.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\Player.cs" />
-     <Compile Include="Assets\_Scripts\Wall.cs" />
      <Compile Include="Assets\_Scripts\boxController.cs" />
      <Compile Include="Assets\_Scripts\boxOpen.cs" />
      <Compile Include="Assets\_Scripts\push.cs" />
