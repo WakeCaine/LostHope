@@ -31,19 +31,22 @@ public class GameManager : MonoBehaviour
 		LevelLoadCalled = false;
 		enemies = new List<Enemy> ();
 		boardScript = GetComponent<BoardManager> ();
-		Debug.Log ("Awake");
 		InitGame ();
 	}
 
 	private void OnLevelWasLoaded (int index)
 	{
+		//##Comment this if you have problems with level incrementation while testing##
+		//It is to prevent second loading when changing two different scenes, 
+		//it bugs out while testing same scene
 		if (!LevelLoadCalled) {
 			print ("LevelLoaded called");
 			LevelLoadCalled = true;//flip the flag
 			return;
 		}
+		//-----------------------------------------
+
 		level++;
-		Debug.Log ("GameManager is initiated");
 		InitGame ();
 	}
 
@@ -52,7 +55,6 @@ public class GameManager : MonoBehaviour
 		doingSetup = true;
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
-		Debug.Log ("WHY");
 		levelText.text = "Day " + level;
 		levelImage.SetActive (true);
 		Invoke ("HideLevelImage", levelStartDelay);
@@ -76,7 +78,7 @@ public class GameManager : MonoBehaviour
 
 	IEnumerator MoveEnemies ()
 	{
-		enemiesMoving = true;
+		//enemiesMoving = true;
 		yield return new WaitForSeconds (turnDelay);
 		if (enemies.Count == 0) {
 			yield return new WaitForSeconds (turnDelay);
@@ -87,14 +89,17 @@ public class GameManager : MonoBehaviour
 			yield return new WaitForSeconds (enemies [i].moveTime);
 		}
 
-		playersTurn = true;
+		//playersTurn = true;
 
-		enemiesMoving = false;
+		//enemiesMoving = false;
 	}
 	// Update is called once per frame
 	void Update ()
 	{
-		if (playersTurn || enemiesMoving || doingSetup) {
+		//if (playersTurn || enemiesMoving || doingSetup) {
+		//	return;
+		//}
+		if (doingSetup) {
 			return;
 		}
 		StartCoroutine (MoveEnemies ());
