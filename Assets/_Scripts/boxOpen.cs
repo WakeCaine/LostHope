@@ -25,7 +25,7 @@ public class boxOpen : MonoBehaviour {
 
 	}
 
-	void OnTriggerExit2D(Collider other){
+	void OnTriggerExit2D(Collider2D other){
 		if (other.gameObject.tag == "Player") {
 			animator.SetBool ("boxOpen", false);
 		}
