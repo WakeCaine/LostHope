@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Player : MovingObject
+public class PlayerController : MovingObject
 {
 	public Text foodText;
 	public int wallDamage = 1;
@@ -22,6 +22,7 @@ public class Player : MovingObject
 	public bool canMove = true;
 
 	private Animator animator;
+	private GameManager gameManager;
 	private int food;
 
 
@@ -29,6 +30,7 @@ public class Player : MovingObject
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator> ();
+		gameManager = GameObject.FindObjectOfType<GameManager> ();
 		food = GameManager.instance.playerFoodPoints;
 		foodText.text = "Food: " + food;
 
@@ -42,16 +44,20 @@ public class Player : MovingObject
 	// Update is called once per frame
 	void Update ()
 	{
-		if (!GameManager.instance.playersTurn)
-			return;
-		else if (!canMove)
-			return;
+		//if (!GameManager.instance.playersTurn)
+		//	return;
 
-		int horizontal = 0;
-		int vertical = 0;
+	}
 
-		horizontal = (int)(Input.GetAxisRaw ("Horizontal"));
-		vertical = (int)(Input.GetAxisRaw ("Vertical"));
+	void FixedUpdate ()
+	{
+		if (!canMove)
+			return;
+		else if (gameManager.doingSetup)
+			return;
+		
+		float horizontal = Input.GetAxisRaw ("Horizontal");
+		float vertical = Input.GetAxisRaw ("Vertical");
 
 		if (horizontal != 0)
 			vertical = 0;
@@ -81,7 +87,7 @@ public class Player : MovingObject
 		CheckIfGameOver ();
 	}
 
-	private void OnTriggerEnter2D (Collider2D other)
+	private void OnTriggerEnter (Collider other)
 	{
 		if (other.tag == "Exit") {
 			Invoke ("Restart", restartLevelDelay);
@@ -101,10 +107,10 @@ public class Player : MovingObject
 		}
 	}
 
-	protected override void AttemptMove<T> (int xDir, int yDir)
+	protected override bool AttemptMove<T> (float xDir, float yDir)
 	{
-		food--;
-		foodText.text = "Food: " + food;
+		//food--;
+		//foodText.text = "Food: " + food;
 
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
@@ -113,14 +119,15 @@ public class Player : MovingObject
 			transform.localRotation = Quaternion.Euler (0, 0, 0);
 		}
 
-		RaycastHit2D hit;
-		if (Move (xDir, yDir, out hit)) {
+		RaycastHit hit;
+		bool canMove = Move (xDir, yDir, out hit);
+		if (canMove) {
 			SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 		}
 
 		CheckIfGameOver ();
-
-		GameManager.instance.playersTurn = false;
+		return canMove;
+		//GameManager.instance.playersTurn = false;
 	}
 
 	private void CheckIfGameOver ()

@@ -4,62 +4,77 @@ using System.Collections;
 public abstract class MovingObject : MonoBehaviour
 {
 	public float moveTime = 0.1f;
+	public float speed = 6f;
 	public LayerMask blockingLayer;
 
-	private BoxCollider2D boxCollider;
-	private Rigidbody2D rb2D;
+	private BoxCollider boxCollider;
+	private Rigidbody rb2D;
 	private float inverseMoveTime;
+
+	private Vector3 s, e;
+
+
 
 	// Use this for initialization
 	protected virtual void Start ()
 	{
-		boxCollider = GetComponent<BoxCollider2D> ();
-		rb2D = GetComponent<Rigidbody2D> ();
-		inverseMoveTime = 1f / moveTime;
+		boxCollider = GetComponent<BoxCollider> ();
+		rb2D = GetComponent<Rigidbody> ();
+		//inverseMoveTime = 1f / moveTime;
 	}
 
-	protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
+	public void OnDrawGizmos ()
 	{
-		Vector2 start = transform.position;
+		Gizmos.DrawLine (s, e);
+	}
+
+	protected bool Move (float xDir, float yDir, out RaycastHit hitt)
+	{
+		Vector2 start = rb2D.transform.position;
 		Vector2 end = start + new Vector2 (xDir, yDir);
 
-		boxCollider.enabled = false;
-		hit = Physics2D.Linecast (start, end, blockingLayer);
-		boxCollider.enabled = true;
+		RaycastHit hit = new RaycastHit ();
+		hitt = new RaycastHit ();
 
+		boxCollider.enabled = false;
+		s = new Vector3 (start.x, start.y, 0);
+		e = new Vector3 (end.x, end.y, 0);
+
+		Vector3 newPosition = new Vector3 ();
+		newPosition.Set (xDir, yDir, 0);
+		newPosition = newPosition.normalized * speed * Time.deltaTime;
+
+		Vector3 pos = rb2D.transform.position + new Vector3 (xDir / 2, yDir / 2, 0);
+		e = pos;
+
+		bool gotHit = Physics.Linecast (new Vector3 (start.x, start.y, 0), new Vector3 (pos.x, pos.y, 0), out hit, blockingLayer);
+		if (gotHit) {
+			hitt = hit;
+		}
+		boxCollider.enabled = true;
 		if (hit.transform == null) {
-			StartCoroutine (SmoothMovement (end));
+			rb2D.MovePosition (rb2D.transform.position + newPosition);
 			return true;
 		}
 
 		return false;
 	}
 
-	protected virtual void AttemptMove <T> (int xDir, int yDir)
+	protected virtual bool AttemptMove <T> (float xDir, float yDir)
 		where T : Component
 	{
-		RaycastHit2D hit;
+		RaycastHit hit = new RaycastHit ();
 		bool canMove = Move (xDir, yDir, out hit);
 
 		if (hit.transform == null)
-			return;
+			return false;
 		T hitComponent = hit.transform.GetComponent<T> ();
 
 		if (!canMove && hitComponent != null) {
 			OnCantMove (hitComponent);
 		}
-	}
 
-	protected IEnumerator SmoothMovement (Vector3 end)
-	{
-		float sqrRemainingDistance = ((transform.position - end).sqrMagnitude);
-
-		while (sqrRemainingDistance > float.Epsilon) {
-			Vector3 newPosition = Vector3.MoveTowards (rb2D.position, end, inverseMoveTime * Time.deltaTime);
-			rb2D.MovePosition (newPosition);
-			sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-			yield return null;
-		}
+		return canMove;
 	}
 
 	protected abstract void OnCantMove <T> (T component)

@@ -4,17 +4,28 @@ using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour
 {
+	[Tooltip ("TextBox for messages is required.")]
 	public GameObject textBox;
 	public Text dialogText;
 	public TextAsset textFile;
 	public string[] textLines;
 
+	[Range (0f, 200f)]
+	public float zoomNumber = 40f;
+
+	[Range (0f, 2000f)]
+	public float textBoxWidth = 210f;
+
 	public int currentLine = 0;
 	public int endAtLine = 0;
 
-	public Player player;
+	public PlayerController player;
+
+	[Tooltip ("0 - Zoom + dialog box, 1 - Background distorted + characters avatars on screen")]
+	public int dialogueMode = 0;
 
 	private GameObject camera;
+	private float currentZoom;
 
 	private bool isZoomed = false;
 
@@ -22,8 +33,10 @@ public class TextBoxManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		player = FindObjectOfType<Player> ();
+		player = FindObjectOfType<PlayerController> ();
 		camera = GameObject.FindGameObjectWithTag ("MainCamera");
+		currentZoom = (camera.GetComponent<Camera> () as Camera).fieldOfView;
+
 	}
 	
 	// Update is called once per frame
@@ -34,9 +47,9 @@ public class TextBoxManager : MonoBehaviour
 		}
 
 		if (isZoomed == true) {
-			Camera.main.fieldOfView = Mathf.Lerp (Camera.main.fieldOfView, 40, Time.deltaTime * 5.0f);
+			Camera.main.fieldOfView = Mathf.Lerp (Camera.main.fieldOfView, zoomNumber, Time.deltaTime * 5.0f);
 		} else if (isZoomed == false) {
-			Camera.main.fieldOfView = Mathf.Lerp (Camera.main.fieldOfView, 84.4f, Time.deltaTime * 5.0f);
+			Camera.main.fieldOfView = Mathf.Lerp (Camera.main.fieldOfView, currentZoom, Time.deltaTime * 5.0f);
 		}
 
 		dialogText.text = textLines [currentLine];
@@ -53,6 +66,8 @@ public class TextBoxManager : MonoBehaviour
 	public void EnableTextBox ()
 	{
 		textBox.SetActive (true);
+		Rect newRect = textBox.GetComponent<RectTransform> ().rect;
+		textBox.GetComponent<RectTransform> ().sizeDelta = new Vector2 (textBoxWidth, newRect.height);
 		player.canMove = false;
 	}
 
