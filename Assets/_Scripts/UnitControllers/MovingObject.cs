@@ -4,7 +4,7 @@ using System.Collections;
 public abstract class MovingObject : MonoBehaviour
 {
 	public float moveTime = 0.1f;
-	public float speed = 6f;
+	public float speed = 3f;
 	public LayerMask blockingLayer;
 
 	private BoxCollider boxCollider;
@@ -42,18 +42,18 @@ public abstract class MovingObject : MonoBehaviour
 
 		Vector3 newPosition = new Vector3 ();
 		newPosition.Set (xDir, yDir, 0);
-		newPosition = newPosition.normalized * speed * Time.deltaTime;
 
 		Vector3 pos = rb2D.transform.position + new Vector3 (xDir / 2, yDir / 2, 0);
 		e = pos;
 
 		bool gotHit = Physics.Linecast (new Vector3 (start.x, start.y, 0), new Vector3 (pos.x, pos.y, 0), out hit, blockingLayer);
+
 		if (gotHit) {
 			hitt = hit;
 		}
 		boxCollider.enabled = true;
 		if (hit.transform == null) {
-			rb2D.MovePosition (rb2D.transform.position + newPosition);
+			rb2D.MovePosition (rb2D.position + newPosition * speed * Time.deltaTime);
 			return true;
 		}
 

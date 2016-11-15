@@ -21,6 +21,7 @@ public class PlayerController : MovingObject
 
 	public bool canMove = true;
 
+	private SpriteRenderer sprite;
 	private Animator animator;
 	private GameManager gameManager;
 	private int food;
@@ -31,6 +32,7 @@ public class PlayerController : MovingObject
 	{
 		animator = GetComponent<Animator> ();
 		gameManager = GameObject.FindObjectOfType<GameManager> ();
+		sprite = GetComponent<SpriteRenderer> ();
 		food = GameManager.instance.playerFoodPoints;
 		foodText.text = "Food: " + food;
 
@@ -114,9 +116,9 @@ public class PlayerController : MovingObject
 
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
-			transform.localRotation = Quaternion.Euler (0, 180, 0);
+			sprite.flipX = true;
 		} else if (xDir > 0) {
-			transform.localRotation = Quaternion.Euler (0, 0, 0);
+			sprite.flipX = false;
 		}
 
 		RaycastHit hit;

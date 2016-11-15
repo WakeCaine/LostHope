@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
 		character = GameObject.FindGameObjectWithTag ("Player");
 	}
 
-	void Update ()
+	void LateUpdate ()
 	{
 		if (useCorrection) {
 			if (character.transform.position.x > transform.position.x - boundary) {
