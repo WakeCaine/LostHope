@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/*public class PlayerController1 : MovingObject
+public class HeroPlayerController : MovingObject
 {
 	public Text foodText;
 	public int wallDamage = 1;
@@ -21,7 +21,9 @@ using UnityEngine.UI;
 
 	public bool canMove = true;
 
+	private SpriteRenderer sprite;
 	private Animator animator;
+	private GameplayManager gameManager;
 	private int food;
 
 
@@ -29,7 +31,9 @@ using UnityEngine.UI;
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator> ();
-		food = GameManager.instance.playerFoodPoints;
+		gameManager = GameObject.FindObjectOfType<GameplayManager> ();
+		sprite = GetComponent<SpriteRenderer> ();
+		food = GameplayManager.instance.playerFoodPoints;
 		foodText.text = "Food: " + food;
 
 		base.Start ();
@@ -37,21 +41,25 @@ using UnityEngine.UI;
 
 	private void OnDisable ()
 	{
-		GameManager.instance.playerFoodPoints = food;
+		GameplayManager.instance.playerFoodPoints = food;
 	}
 	// Update is called once per frame
 	void Update ()
 	{
 		//if (!GameManager.instance.playersTurn)
 		//	return;
-		//else if (!canMove)
-		//	return;
 
-		int horizontal = 0;
-		int vertical = 0;
+	}
 
-		horizontal = (int)(Input.GetAxisRaw ("Horizontal"));
-		vertical = (int)(Input.GetAxisRaw ("Vertical"));
+	void FixedUpdate ()
+	{
+		if (!canMove)
+			return;
+		else if (gameManager.doingSetup)
+			return;
+
+		float horizontal = Input.GetAxisRaw ("Horizontal");
+		float vertical = Input.GetAxisRaw ("Vertical");
 
 		if (horizontal != 0)
 			vertical = 0;
@@ -70,7 +78,12 @@ using UnityEngine.UI;
 
 	private void Restart ()
 	{
-		SceneManager.LoadScene (1);
+		BoardCycleManager m = GameplayManager.instance.boardScript;
+		GameplayManager.instance.Level += 1;
+		m.SwitchLevel (GameplayManager.instance.Level);
+		this.transform.position = Vector3.zero; 
+
+		enabled = true;
 	}
 
 	public void LooseFood (int loss)
@@ -81,11 +94,12 @@ using UnityEngine.UI;
 		CheckIfGameOver ();
 	}
 
-	private void OnTriggerEnter2D (Collider2D other)
+	private void OnTriggerEnter (Collider other)
 	{
 		if (other.tag == "Exit") {
 			Invoke ("Restart", restartLevelDelay);
 			enabled = false;
+			this.transform.position = Vector3.zero; 
 		} else if (other.tag == "Food") {
 			food += pointsPerFood;
 			foodText.text = "+" + pointsPerFood + " Food: " + food;
@@ -101,25 +115,26 @@ using UnityEngine.UI;
 		}
 	}
 
-	protected override void AttemptMove<T> (int xDir, int yDir)
+	protected override bool AttemptMove<T> (float xDir, float yDir)
 	{
 		//food--;
 		//foodText.text = "Food: " + food;
 
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
-			transform.localRotation = Quaternion.Euler (0, 180, 0);
+			sprite.flipX = true;
 		} else if (xDir > 0) {
-			transform.localRotation = Quaternion.Euler (0, 0, 0);
+			sprite.flipX = false;
 		}
 
-		RaycastHit2D hit;
-		if (Move (xDir, yDir, out hit)) {
+		RaycastHit hit;
+		bool canMove = Move (xDir, yDir, out hit);
+		if (canMove) {
 			SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 		}
 
 		CheckIfGameOver ();
-
+		return canMove;
 		//GameManager.instance.playersTurn = false;
 	}
 
@@ -128,8 +143,7 @@ using UnityEngine.UI;
 		if (food <= 0) {
 			SoundManager.instance.musicSource.Stop ();
 			SoundManager.instance.RandomizeSfx (gameOverSound);
-			GameManager.instance.GameOver ();
+			GameplayManager.instance.GameOver ();
 		}
 	}
 }
-*/
