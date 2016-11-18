@@ -168,7 +168,7 @@ public class BoardCycleManager : MonoBehaviour
 	//TEMPLATE GENERATOR HERE
 	//For now in code, we could put it as JSON file instead ~Darius
 
-	public MapTemplate GenerateTemplate (int templateNumber)
+	MapTemplate GenerateTemplate (int templateNumber)
 	{
 		//Template creation here
 		List<Vector3> newGridPositions = new List<Vector3> ();
@@ -177,7 +177,7 @@ public class BoardCycleManager : MonoBehaviour
 				newGridPositions.Add (new Vector3 (x, y, 0f));
 			}
 
-		Stack<int[][]> objectAndPositon = new Stack<int[][]> ();
+		Stack<int[]> objectAndPositon = new Stack<int[]> ();
 
 		//TODO change to JSON
 		//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject
@@ -188,6 +188,7 @@ public class BoardCycleManager : MonoBehaviour
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 3));
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
+				break;
 			}
 		case 1:
 			{
@@ -195,6 +196,7 @@ public class BoardCycleManager : MonoBehaviour
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
 				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
+				break;
 			}
 		}
 		return new MapTemplate (templateNumber, "Board" + templateNumber, "Items" + templateNumber, objectAndPositon, gridPositions);
@@ -223,7 +225,7 @@ public class BoardCycleManager : MonoBehaviour
 		//TODO rethink this logic ~Darius
 		//I think i need to change logic of gridPositions. That is fucked.
 		int chosenElement = (x > 1 ? x - 1 * rows : x - 1) + y - 1;
-		int[] arrayOfObjects = new int[] { { chosenElement, chosenObject } };
+		int[] arrayOfObjects = new int[] { chosenElement, chosenObject };
 		return arrayOfObjects;
 	}
 
@@ -233,7 +235,16 @@ public class BoardCycleManager : MonoBehaviour
 		public int number;
 		public String boardHolder;
 		public String itemHolder;
-		public Stack<int[][]> objectAndPosition;
+		public Stack<int[]> objectAndPosition;
 		private List<Vector3> gridPositions;
+
+		public MapTemplate (int number, String boardHolder, String itemHolder, Stack<int[]> objectAndPosition, List<Vector3> gridPositions)
+		{
+			this.number = number;
+			this.boardHolder = boardHolder;
+			this.itemHolder = itemHolder;
+			this.objectAndPosition = objectAndPosition;
+			this.gridPositions = gridPositions;
+		}
 	}
 }

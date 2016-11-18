@@ -46,9 +46,7 @@ public class HeroPlayerController : MovingObject
 	// Update is called once per frame
 	void Update ()
 	{
-		//if (!GameManager.instance.playersTurn)
-		//	return;
-
+		
 	}
 
 	void FixedUpdate ()
@@ -117,8 +115,6 @@ public class HeroPlayerController : MovingObject
 
 	protected override bool AttemptMove<T> (float xDir, float yDir)
 	{
-		//food--;
-		//foodText.text = "Food: " + food;
 
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
@@ -135,7 +131,6 @@ public class HeroPlayerController : MovingObject
 
 		CheckIfGameOver ();
 		return canMove;
-		//GameManager.instance.playersTurn = false;
 	}
 
 	private void CheckIfGameOver ()
