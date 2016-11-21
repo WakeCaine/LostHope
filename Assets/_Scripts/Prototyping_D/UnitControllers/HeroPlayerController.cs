@@ -79,7 +79,19 @@ public class HeroPlayerController : MovingObject
 		BoardCycleManager m = GameplayManager.instance.boardScript;
 		GameplayManager.instance.Level += 1;
 		m.SwitchLevel (GameplayManager.instance.Level);
-		this.transform.position = Vector3.zero; 
+		float x = this.transform.position.x + 1; //9,5
+		float y = this.transform.position.y + 1; //3
+		int rows = GameplayManager.instance.boardScript.rows;
+		int columns = GameplayManager.instance.boardScript.columns;
+		if (x < (int)(columns / 2) + 1.5 && x > (int)(columns / 2) - 1.5 && y > rows) {
+			this.transform.position = new Vector3 ((int)(columns / 2), 0, 0);
+		} else if (x < (int)(columns / 2) + 1.5 && x > (int)(columns / 2) - 1.5 && y < 1) {
+			this.transform.position = new Vector3 ((int)(columns / 2), rows - 1, 0);
+		} else if (y < (int)(rows / 2) + 1.5 && y > (int)(rows / 2) - 1.5 && x > columns) {
+			this.transform.position = new Vector3 (0, (int)(rows / 2), 0);
+		} else if (y < (int)(rows / 2) + 1.5 && y > (int)(rows / 2) - 1.5 && x < 1) {
+			this.transform.position = new Vector3 (columns - 1, (int)(rows / 2), 0);
+		} 
 
 		enabled = true;
 	}
@@ -95,9 +107,8 @@ public class HeroPlayerController : MovingObject
 	private void OnTriggerEnter (Collider other)
 	{
 		if (other.tag == "Exit") {
-			Invoke ("Restart", restartLevelDelay);
 			enabled = false;
-			this.transform.position = Vector3.zero; 
+			Invoke ("Restart", restartLevelDelay);
 		} else if (other.tag == "Food") {
 			food += pointsPerFood;
 			foodText.text = "+" + pointsPerFood + " Food: " + food;

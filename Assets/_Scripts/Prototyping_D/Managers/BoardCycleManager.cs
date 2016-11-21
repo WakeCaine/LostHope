@@ -20,8 +20,23 @@ public class BoardCycleManager : MonoBehaviour
 		}
 	}
 
-	public int columns = 4;
-	public int rows = 4;
+	enum GameObjectType
+	{
+		InnerWall,
+		Item,
+		Exit,
+		Enemy,
+		Npc,
+		Hero
+	}
+
+	enum MapObjectType
+	{
+		
+	}
+
+	public int columns;
+	public int rows;
 	public int nextLevelYPlacement = 10;
 	public Count wallCount = new Count (5, 9);
 	public Count foodCount = new Count (1, 5);
@@ -68,12 +83,26 @@ public class BoardCycleManager : MonoBehaviour
 			itemHolder = new GameObject ("Items").transform;
 		}
 
+		GameObject exitInstance = Instantiate (exit, new Vector3 (-1, ((int)rows / 2), 0f), Quaternion.identity) as GameObject;
+		GameObject exitInstance1 = Instantiate (exit, new Vector3 (columns, ((int)rows / 2), 0f), Quaternion.identity) as GameObject;
+		GameObject exitInstance2 = Instantiate (exit, new Vector3 (((int)columns / 2), -1, 0f), Quaternion.identity) as GameObject;
+		GameObject exitInstance3 = Instantiate (exit, new Vector3 (((int)columns / 2), rows, 0f), Quaternion.identity) as GameObject;
+		if (nextBoard) {
+			exitInstance.transform.SetParent (itemHolder1);
+		} else {
+			exitInstance.transform.SetParent (itemHolder);
+		}
+
 		for (int x = -1; x < columns + 1; x++)
 			for (int y = -1; y < rows + 1; y++) {
 				GameObject toInstantiate = floorTiles [Random.Range (0, floorTiles.Length)];
-				if (x == -1 || x == columns || y == -1 || y == rows) {
-					toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
-				}
+				if ((x == -1 || x == columns) && y == rows % 2 + 1) {
+					//nothing here
+				} else if (y == rows && (x > -1 && x != (int)(columns / 2) && x < columns)) {
+					toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length - 2)];
+				} else if ((x == -1 || x == columns || y == -1) && x != (int)(columns / 2)) {
+					toInstantiate = outerWallTiles [outerWallTiles.Length - 1];
+				} 
 				GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
 				instance.transform.SetParent (nextBoard ? boardHolder1 : boardHolder);
 			}
@@ -87,7 +116,7 @@ public class BoardCycleManager : MonoBehaviour
 		return randomPosition;
 	}
 
-	void LayoutObjectAtRandom (GameObject[] tileArray, int minimum, int maximum)
+	void LayoutObjectAtRandom (GameObject[] tileArray, GameObjectType objectType, int minimum, int maximum)
 	{
 		int objectCount = Random.Range (minimum, maximum + 1);
 		for (int i = 0; i < objectCount; i++) {
@@ -112,30 +141,24 @@ public class BoardCycleManager : MonoBehaviour
 		InitialiseList ();
 		GenerateMapObjects (randomGeneration);
 
-		GameObject instance = Instantiate (exit, new Vector3 (columns - 1, rows - 1, 0f), Quaternion.identity) as GameObject;
 		if (nextBoard) {
-			instance.transform.SetParent (itemHolder1);
 			Vector3 newPosition = boardHolder1.transform.position;
 			newPosition.y += nextLevelYPlacement;
 			boardHolder1.transform.position = newPosition;
 			newPosition = itemHolder1.transform.position;
 			newPosition.y += nextLevelYPlacement;
 			itemHolder1.transform.position = newPosition;
-		} else {
-			instance.transform.SetParent (itemHolder);
-		}
-
-		if (nextBoard)
 			nextBoard = false;
+		}
 	}
 
 	public void GenerateMapObjects (bool random)
 	{
 		if (random) {
-			LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
-			LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
+			LayoutObjectAtRandom (wallTiles, GameObjectType.InnerWall, wallCount.minimum, wallCount.maximum);
+			LayoutObjectAtRandom (foodTiles, GameObjectType.Item, foodCount.minimum, foodCount.maximum);
 			int enemyCount = (int)Mathf.Log (lastGeneratedLevel, 2f);
-			LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
+			LayoutObjectAtRandom (enemyTiles, GameObjectType.Enemy, enemyCount, enemyCount);
 		} else {
 			GenerateTemplate (currentLevelTemplate);
 			currentLevelTemplate++;
