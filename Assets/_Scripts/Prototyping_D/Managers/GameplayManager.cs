@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameplayManager : MonoBehaviour
 {
-	public float levelStartDelay = 2f;
+	public float levelStartDelay = 3f;
 	public float turnDelay = .3f;
 	public static GameplayManager instance = null;
 	public static bool LevelLoadCalled = false;
@@ -64,7 +64,7 @@ public class GameplayManager : MonoBehaviour
 		doingSetup = true;
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
-		levelText.text = "Day " + level;
+		levelText.text = "???????????????????????????";
 		levelImage.SetActive (true);
 		Invoke ("HideLevelImage", levelStartDelay);
 

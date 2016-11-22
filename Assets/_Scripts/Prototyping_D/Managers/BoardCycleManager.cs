@@ -32,15 +32,22 @@ public class BoardCycleManager : MonoBehaviour
 
 	enum MapObjectType
 	{
-		
+		InnerWall,
+		Item,
+		Exit,
+		Enemy,
+		Npc,
+		Hero,
+		Interactable,
+		Pushable
 	}
 
-	public int columns;
-	public int rows;
+	public int columns = 9;
+	public int rows = 5;
 	public int nextLevelYPlacement = 10;
 	public Count wallCount = new Count (5, 9);
 	public Count foodCount = new Count (1, 5);
-	public GameObject exit;
+	public GameObject exitOrginal;
 
 	public GameObject[] floorTiles;
 	public GameObject[] wallTiles;
@@ -58,10 +65,12 @@ public class BoardCycleManager : MonoBehaviour
 	private List<Vector3> gridPositions1 = new List<Vector3> ();
 	private Stack<MapTemplate> stackOfTemplates = new Stack<MapTemplate> ();
 	private int lastGeneratedLevel;
+	private Vector3 lastPlayerPosition;
 
 	void Start ()
 	{
 		RandomizeTemplates ();
+		nextLevelYPlacement = columns + 1;
 	}
 
 	void InitialiseList ()
@@ -83,34 +92,82 @@ public class BoardCycleManager : MonoBehaviour
 			itemHolder = new GameObject ("Items").transform;
 		}
 
-		GameObject exitInstance = Instantiate (exit, new Vector3 (-1, ((int)rows / 2), 0f), Quaternion.identity) as GameObject;
-		GameObject exitInstance1 = Instantiate (exit, new Vector3 (columns, ((int)rows / 2), 0f), Quaternion.identity) as GameObject;
-		GameObject exitInstance2 = Instantiate (exit, new Vector3 (((int)columns / 2), -1, 0f), Quaternion.identity) as GameObject;
-		GameObject exitInstance3 = Instantiate (exit, new Vector3 (((int)columns / 2), rows, 0f), Quaternion.identity) as GameObject;
-		if (nextBoard) {
-			exitInstance.transform.SetParent (itemHolder1);
-		} else {
-			exitInstance.transform.SetParent (itemHolder);
+		if (!nextBoard) {
+			GameObject exitInstance = null, exitInstance1 = null, exitInstance2 = null, exitInstance3 = null;
+			//0 - top, 1- right, 2- down, 3- left ------- going with the clock
+			List<int> alaviableExits = new List<int> ();
+			for (int i = 0; i < 4; i++)
+				alaviableExits.Add (i);
+
+
+			int numberOfExits = 0;
+			for (int i = 0; i < 10; i++) {
+				numberOfExits = Random.Range (1, 4);
+				if (i > 6 && numberOfExits > 3)
+					numberOfExits = Random.Range (1, 4);
+			}
+
+			GameObject exit = exitOrginal;
+
+			switch (numberOfExits) {
+			case 1:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			case 2:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			case 3:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			}
+
+
+			if (exitInstance != null)
+				exitInstance.transform.SetParent (itemHolder);
+			if (exitInstance1 != null)
+				exitInstance1.transform.SetParent (itemHolder);
+			if (exitInstance2 != null)
+				exitInstance2.transform.SetParent (itemHolder);
+			if (exitInstance3 != null)
+				exitInstance3.transform.SetParent (itemHolder);
 		}
 
 		for (int x = -1; x < columns + 1; x++)
 			for (int y = -1; y < rows + 1; y++) {
 				GameObject toInstantiate = floorTiles [Random.Range (0, floorTiles.Length)];
-				if ((x == -1 || x == columns) && y == rows % 2 + 1) {
-					//nothing here
+				if ((x == -1 || x == columns) && y == (rows / 2)) {
+					toInstantiate = null;
+				} else if (x == (int)(columns / 2) && (y == -1 || y == rows)) {
+					toInstantiate = null;
 				} else if (y == rows && (x > -1 && x != (int)(columns / 2) && x < columns)) {
 					toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length - 2)];
 				} else if ((x == -1 || x == columns || y == -1) && x != (int)(columns / 2)) {
 					toInstantiate = outerWallTiles [outerWallTiles.Length - 1];
-				} 
-				GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
-				instance.transform.SetParent (nextBoard ? boardHolder1 : boardHolder);
+				}
+				GameObject instance = null;
+				if (toInstantiate != null)
+					instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
+
+				if (instance != null)
+					instance.transform.SetParent (nextBoard ? boardHolder1 : boardHolder);
 			}
 	}
 
 	Vector3 RandomPosition ()
 	{
-		int randomIndex = Random.Range (0, gridPositions1.Count - 1);
+		int randomIndex = Random.Range (0, gridPositions1.Count);
 		Vector3 randomPosition = nextBoard ? gridPositions1 [randomIndex] : gridPositions [randomIndex];
 		(nextBoard ? gridPositions1 : gridPositions).RemoveAt (randomIndex);
 		return randomPosition;
@@ -165,27 +222,138 @@ public class BoardCycleManager : MonoBehaviour
 		}
 	}
 
-	public void SwitchLevel (int level)
+	public void SwitchLevel (int level, Vector3 lastPosition)
 	{
+		
 		GameplayManager.instance.DoingSetup (true);
 
+		lastPlayerPosition = lastPosition;
 		Destroy (boardHolder.gameObject);
 		Destroy (itemHolder.gameObject);
+
 		gridPositions = gridPositions1;
 		boardHolder = boardHolder1;
 		itemHolder = itemHolder1;
 
 		Vector3 newPosition = boardHolder.transform.position;
-		newPosition.y -= 10;
+		newPosition.y -= nextLevelYPlacement;
 		boardHolder.transform.position = newPosition;
 		newPosition = itemHolder.transform.position;
-		newPosition.y -= 10;
+		newPosition.y -= nextLevelYPlacement;
 		itemHolder.transform.position = newPosition;
+
+		//------------------------------------------------
+		float xx = lastPlayerPosition.x + 1;
+		float yy = lastPlayerPosition.y + 1;
+
+		GameObject exitInstance = null, exitInstance1 = null, exitInstance2 = null, exitInstance3 = null;
+
+		//0 - top, 1- right, 2- down, 3- left ------- going with the clock
+		List<int> alaviableExits = new List<int> ();
+		for (int i = 0; i < 4; i++)
+			alaviableExits.Add (i);
+
+		GameObject exit = exitOrginal;
+
+		if (xx < (int)(columns / 2) + 1.5 && xx > (int)(columns / 2) - 1.5 && yy > rows) {
+			exitInstance = outerWallTiles [outerWallTiles.Length - 2];
+			exitInstance = Instantiate (exitInstance, new Vector3 ((int)(columns / 2), -1, 0), Quaternion.identity) as GameObject;
+			alaviableExits.Remove (2);
+		} else if (xx < (int)(columns / 2) + 1.5 && xx > (int)(columns / 2) - 1.5 && yy < 1) {
+			exitInstance = outerWallTiles [outerWallTiles.Length - 2];
+			exitInstance = Instantiate (exitInstance, new Vector3 ((int)(columns / 2), rows, 0), Quaternion.identity) as GameObject;
+			alaviableExits.Remove (0);
+		} else if (yy < (int)(rows / 2) + 1.5 && yy > (int)(rows / 2) - 1.5 && xx > columns) {
+			exitInstance = outerWallTiles [outerWallTiles.Length - 2];
+			exitInstance = Instantiate (exitInstance, new Vector3 (-1, (int)(rows / 2), 0), Quaternion.identity) as GameObject;
+			alaviableExits.Remove (3);
+		} else if (yy < (int)(rows / 2) + 1.5 && yy > (int)(rows / 2) - 1.5 && xx < 1) {
+			exitInstance = outerWallTiles [outerWallTiles.Length - 2];
+			exitInstance = Instantiate (exitInstance, new Vector3 (columns, (int)(rows / 2), 0), Quaternion.identity) as GameObject;
+			alaviableExits.Remove (1);
+		}
+
+		int numberOfExits = 0;
+		for (int i = 0; i < 10; i++) {
+			numberOfExits = Random.Range (1, 4);
+			if (i > 6 && numberOfExits == 3)
+				numberOfExits = Random.Range (1, 4);
+		}
+
+		switch (numberOfExits) {
+		case 1:
+			exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+			exit = outerWallTiles [outerWallTiles.Length - 1];
+			exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+			exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+			break;
+		case 2:
+			exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+			exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+			exit = outerWallTiles [outerWallTiles.Length - 1];
+			exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+			break;
+		case 3:
+			exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+			exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+			exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
+			break;
+		}
+
+		if (alaviableExits.Count > 0) {
+			foreach (int i in alaviableExits) {
+				
+			}
+		}
+
+		nextBoard = true;
+		if (nextBoard) {
+			if (exitInstance != null)
+				exitInstance.transform.SetParent (itemHolder);
+			if (exitInstance1 != null)
+				exitInstance1.transform.SetParent (itemHolder);
+			if (exitInstance2 != null)
+				exitInstance2.transform.SetParent (itemHolder);
+			if (exitInstance3 != null)
+				exitInstance3.transform.SetParent (itemHolder);
+		}
+		//--------------------------------------------
 
 		GameplayManager.instance.SwitchEnemyLists ();
 		SetupScene (level, true);
 
 		GameplayManager.instance.DoingSetup (false);
+	}
+
+	GameObject ChooseExitPlacement (List<int> alaviableExitss, GameObject exit, bool isExit)
+	{
+		//0 - top, 1- right, 2- down, 3- left ------- going with the clock
+		int chosenExit = Random.Range (0, alaviableExitss.Count);
+		int found = alaviableExitss [chosenExit];
+		alaviableExitss.RemoveAt (chosenExit);
+		GameObject localExit = exit;
+		Vector3 pos = Vector3.zero;
+		switch (found) {
+		case 0:
+			if (!isExit)
+				localExit = outerWallTiles [Random.Range (0, outerWallTiles.Length - 2)];
+			pos = new Vector3 ((int)(columns / 2), rows, 0);
+			break;
+		case 1:
+			pos = new Vector3 (columns, (int)(rows / 2), 0);
+			break;
+		case 2:
+			pos = new Vector3 ((int)(columns / 2), -1, 0);
+			break;
+		case 3:
+			pos = new Vector3 (-1, (int)(rows / 2), 0);
+			break;
+		default:
+			pos = new Vector3 (-1, (int)(rows / 2), 0);
+			break;
+		}
+
+		return Instantiate (localExit, pos, Quaternion.identity) as GameObject;
 	}
 
 	//TEMPLATE GENERATOR HERE

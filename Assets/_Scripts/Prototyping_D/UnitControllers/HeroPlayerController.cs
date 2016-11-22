@@ -30,11 +30,11 @@ public class HeroPlayerController : MovingObject
 	// Use this for initialization
 	protected override void Start ()
 	{
-		animator = GetComponent<Animator> ();
+		//animator = GetComponent<Animator> ();
 		gameManager = GameObject.FindObjectOfType<GameplayManager> ();
 		sprite = GetComponent<SpriteRenderer> ();
 		food = GameplayManager.instance.playerFoodPoints;
-		foodText.text = "Food: " + food;
+		//foodText.text = "Food: " + food;
 
 		base.Start ();
 	}
@@ -45,11 +45,6 @@ public class HeroPlayerController : MovingObject
 	}
 	// Update is called once per frame
 	void Update ()
-	{
-		
-	}
-
-	void FixedUpdate ()
 	{
 		if (!canMove)
 			return;
@@ -67,18 +62,23 @@ public class HeroPlayerController : MovingObject
 		}
 	}
 
+	void FixedUpdate ()
+	{
+		
+	}
+
 	protected override void OnCantMove<T> (T component)
 	{
 		Wall hitWall = component as Wall;
 		hitWall.DamageWall (wallDamage);
-		animator.SetTrigger ("playerChop");
+		//animator.SetTrigger ("playerChop");
 	}
 
 	private void Restart ()
 	{
 		BoardCycleManager m = GameplayManager.instance.boardScript;
 		GameplayManager.instance.Level += 1;
-		m.SwitchLevel (GameplayManager.instance.Level);
+		m.SwitchLevel (GameplayManager.instance.Level, this.transform.position);
 		float x = this.transform.position.x + 1; //9,5
 		float y = this.transform.position.y + 1; //3
 		int rows = GameplayManager.instance.boardScript.rows;
@@ -98,9 +98,9 @@ public class HeroPlayerController : MovingObject
 
 	public void LooseFood (int loss)
 	{
-		animator.SetTrigger ("playerHit");
-		food -= loss;
-		foodText.text = "-" + loss + " Food: " + food;
+		//animator.SetTrigger ("playerHit");
+		//food -= loss;
+		//foodText.text = "-" + loss + " Food: " + food;
 		CheckIfGameOver ();
 	}
 
@@ -110,13 +110,13 @@ public class HeroPlayerController : MovingObject
 			enabled = false;
 			Invoke ("Restart", restartLevelDelay);
 		} else if (other.tag == "Food") {
-			food += pointsPerFood;
-			foodText.text = "+" + pointsPerFood + " Food: " + food;
+			//food += pointsPerFood;
+			//foodText.text = "+" + pointsPerFood + " Food: " + food;
 			SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
-			food += pointsPerSoda;
-			foodText.text = "+" + pointsPerSoda + " Food: " + food;
+			//food += pointsPerSoda;
+			//foodText.text = "+" + pointsPerSoda + " Food: " + food;
 			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "NPC") {
