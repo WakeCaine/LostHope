@@ -10,6 +10,7 @@ public class Enemy : MovingObject
 	private Animator animator;
 	private Transform target;
 	private bool skipMove;
+	private bool visible = false;
 
 	// Use this for initialization
 	protected override void Start ()
@@ -17,6 +18,10 @@ public class Enemy : MovingObject
 		GameManager.instance.AddEnemyToList (this);
 		animator = GetComponent<Animator> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
+
+		// Enemies start out as invisible
+		GetComponent<SpriteRenderer>().enabled = false;
+		// End
 
 		base.Start ();
 	}
@@ -49,7 +54,7 @@ public class Enemy : MovingObject
 		PlayerController hitPlayer = component as PlayerController;
 		animator.SetTrigger ("enemyAttack");
 		SoundManager.instance.RandomizeSfx (enemyAttack1, enemyAttack2);
-		hitPlayer.LooseFood (playerDamage);
+		//hitPlayer.LooseFood (playerDamage);
 	}
 
 	protected override bool AttemptMove<T> (float xDir, float yDir)
@@ -62,5 +67,19 @@ public class Enemy : MovingObject
 		bool canMove = base.AttemptMove<T> (xDir, yDir);
 		return canMove;
 		//skipMove = true;
+	}
+
+	private void OnTriggerEnter (Collider other)
+	{
+		if (other.tag == "Light_Trigger") {
+			GetComponent<SpriteRenderer> ().enabled = true;
+		} 
+	}
+
+	private void OnTriggerExit (Collider other)
+	{
+		if (other.tag == "Light_Trigger") {
+			GetComponent<SpriteRenderer> ().enabled = false;
+		} 
 	}
 }
