@@ -117,8 +117,51 @@ public class PlayerController : MovingObject
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
 			sprite.flipX = true;
+
+			// Light rotation
+			transform.GetChild (1).rotation = Quaternion.Euler (0, -60, 0);
+			// End
+
+			// Light_Trigger rotation and movement
+			Transform lT = transform.GetChild(2);
+			lT.rotation = Quaternion.Euler(0, 0, -90);
+			lT.localPosition = new Vector3(-2.5f, 0.0f, 0.0f);
+			// End
+
 		} else if (xDir > 0) {
 			sprite.flipX = false;
+
+			// Light rotation
+			transform.GetChild (1).rotation = Quaternion.Euler (0, 60, 0);
+			// End
+
+			// Light_Trigger rotation and movement
+			Transform lT = transform.GetChild(2);
+			lT.rotation = Quaternion.Euler(0, 0, 90);
+			lT.localPosition = new Vector3(2.5f, 0.0f, 0.0f);
+			// End
+		}
+
+		if (yDir < 0) {
+			// Light rotation
+			transform.GetChild (1).rotation = Quaternion.Euler (60, 0, 0);
+			// End
+
+			// Light_Trigger rotation and movement
+			Transform lT = transform.GetChild(2);
+			lT.rotation = Quaternion.Euler(0, 0, 0);
+			lT.localPosition = new Vector3(0.0f, -2.5f, 0.0f);
+			// End
+		} else if (yDir > 0) {
+			// Light rotation
+			transform.GetChild (1).rotation = Quaternion.Euler (-60, 0, 0);
+			// End
+
+			// Light_Trigger rotation and movement
+			Transform lT = transform.GetChild(2);
+			lT.rotation = Quaternion.Euler(0, 0, 180);
+			lT.localPosition = new Vector3(0.0f, 2.5f, 0.0f);
+			// End
 		}
 
 		RaycastHit hit;

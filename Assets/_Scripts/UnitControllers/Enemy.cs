@@ -69,17 +69,18 @@ public class Enemy : MovingObject
 		//skipMove = true;
 	}
 
-	private void OnTriggerEnter (Collider other)
-	{
-		if (other.tag == "Light_Trigger") {
-			GetComponent<SpriteRenderer> ().enabled = true;
-		} 
+	private void OnTriggerStay (Collider other){
+		if (other.tag == "Light_Trigger" && visible != true) {
+			visible = true;
+			print ("In");
+		}
 	}
 
-	private void OnTriggerExit (Collider other)
-	{
-		if (other.tag == "Light_Trigger") {
+	void FixedUpdate() {
+		if (visible) {
+			GetComponent<SpriteRenderer> ().enabled = true;
+		} else {
 			GetComponent<SpriteRenderer> ().enabled = false;
-		} 
+		}
 	}
 }
