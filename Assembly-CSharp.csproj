@@ -67,7 +67,6 @@
      <Compile Include="Assets\_Scripts\UI\TextTyper.cs" />
      <Compile Include="Assets\_Scripts\UI\UIManager.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\Enemy.cs" />
-     <Compile Include="Assets\_Scripts\UnitControllers\Light.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\MovingObject.cs" />
      <Compile Include="Assets\_Scripts\UnitControllers\PlayerController.cs" />
      <Compile Include="Assets\_Scripts\Wall.cs" />

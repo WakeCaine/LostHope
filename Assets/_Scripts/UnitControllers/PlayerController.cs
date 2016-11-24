@@ -26,6 +26,8 @@ public class PlayerController : MovingObject
 	private GameManager gameManager;
 	private int food;
 
+	private bool flashLight = false;
+	public float flashPowerLevel = 100f;
 
 	// Use this for initialization
 	protected override void Start ()
@@ -48,7 +50,24 @@ public class PlayerController : MovingObject
 	{
 		//if (!GameManager.instance.playersTurn)
 		//	return;
+		if (flashLight) {
+			flashPowerLevel -= 0.05f;
+		}
+		print (flashPowerLevel);
 
+		flashLightDistance ();
+
+		if (Input.GetKeyDown ("f")) {
+			if (flashLight) {
+				transform.GetChild (1).gameObject.SetActive (false);
+				transform.GetChild (2).gameObject.SetActive (false);
+				flashLight = false;
+			} else {
+				transform.GetChild (1).gameObject.SetActive (true);
+				transform.GetChild (2).gameObject.SetActive (true);
+				flashLight = true;
+			}
+		}
 	}
 
 	void FixedUpdate ()
@@ -106,6 +125,12 @@ public class PlayerController : MovingObject
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "NPC") {
 			//other.gameObject.transform.position = Vector3.MoveTowards (other.transform.position, new Vector3 (other.transform.position.x + 1, other.transform.position.y, other.transform.position.z), 1f);
+		} else if (other.tag == "Batteries") {
+			flashPowerLevel += 20f;
+
+			if (flashPowerLevel > 100f) {
+				flashPowerLevel = 100f;
+			}
 		}
 	}
 
@@ -182,5 +207,9 @@ public class PlayerController : MovingObject
 			SoundManager.instance.RandomizeSfx (gameOverSound);
 			GameManager.instance.GameOver ();
 		}
+	}
+
+	private void flashLightDistance () {
+
 	}
 }
