@@ -72,6 +72,7 @@
      <Compile Include="Assets\_Scripts\Wall.cs" />
      <Compile Include="Assets\_Scripts\boxController.cs" />
      <Compile Include="Assets\_Scripts\boxOpen.cs" />
+     <Compile Include="Assets\_Scripts\door.cs" />
      <Compile Include="Assets\_Scripts\pgirl.cs" />
      <Compile Include="Assets\_Scripts\push.cs" />
      <Compile Include="Assets\_Scripts\wardrobe.cs" />
