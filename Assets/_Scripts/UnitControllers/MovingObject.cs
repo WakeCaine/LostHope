@@ -40,8 +40,7 @@ public abstract class MovingObject : MonoBehaviour
 		s = new Vector3 (start.x, start.y, 0);
 		e = new Vector3 (end.x, end.y, 0);
 
-		Vector3 newPosition = new Vector3 ();
-		newPosition.Set (xDir, yDir, 0);
+		Vector3 newPosition = new Vector3 (xDir, yDir, 0);
 
 		Vector3 pos = rb2D.transform.position + new Vector3 (xDir / 2, yDir / 2, 0);
 		e = pos;

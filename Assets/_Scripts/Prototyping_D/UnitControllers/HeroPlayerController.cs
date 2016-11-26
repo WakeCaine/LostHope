@@ -54,10 +54,12 @@ public class HeroPlayerController : MovingObject
 		float horizontal = Input.GetAxisRaw ("Horizontal");
 		float vertical = Input.GetAxisRaw ("Vertical");
 
+		Vector2 movementVector = new Vector2 (horizontal, vertical);
+
 		if (horizontal != 0)
 			vertical = 0;
 
-		if (horizontal != 0 || vertical != 0) {
+		if (movementVector != Vector2.zero) {
 			AttemptMove<Wall> (horizontal, vertical);
 		}
 	}

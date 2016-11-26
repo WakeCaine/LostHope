@@ -56,8 +56,8 @@ public class BoardCycleManager : MonoBehaviour
 	public GameObject[] outerWallTiles;
 
 	public bool nextBoard = false;
-	public bool randomGeneration = true;
-	public int currentLevelTemplate = 0;
+	public bool randomGeneration = false;
+	public int currentLevelTemplate = 1;
 
 	private Transform boardHolder, boardHolder1;
 	private Transform itemHolder, itemHolder1;
@@ -66,11 +66,19 @@ public class BoardCycleManager : MonoBehaviour
 	private Stack<MapTemplate> stackOfTemplates = new Stack<MapTemplate> ();
 	private int lastGeneratedLevel;
 	private Vector3 lastPlayerPosition;
+	private Light roomLight;
 
 	void Start ()
 	{
 		RandomizeTemplates ();
 		nextLevelYPlacement = columns + 1;
+		roomLight = GameObject.FindGameObjectWithTag ("Light").GetComponent<Light> ();
+	}
+
+	void Update ()
+	{
+		if (lastGeneratedLevel > 2 && roomLight.intensity > 0)
+			roomLight.intensity = 0;
 	}
 
 	void InitialiseList ()
@@ -84,6 +92,7 @@ public class BoardCycleManager : MonoBehaviour
 
 	void BoardSetup ()
 	{
+		
 		if (nextBoard) {
 			boardHolder1 = new GameObject ("Board" + lastGeneratedLevel).transform;
 			itemHolder1 = new GameObject ("Items" + lastGeneratedLevel).transform;
@@ -92,57 +101,92 @@ public class BoardCycleManager : MonoBehaviour
 			itemHolder = new GameObject ("Items").transform;
 		}
 
-		if (!nextBoard) {
-			GameObject exitInstance = null, exitInstance1 = null, exitInstance2 = null, exitInstance3 = null;
-			//0 - top, 1- right, 2- down, 3- left ------- going with the clock
-			List<int> alaviableExits = new List<int> ();
-			for (int i = 0; i < 4; i++)
-				alaviableExits.Add (i);
+		GameObject exitInstance = null, exitInstance1 = null, exitInstance2 = null, exitInstance3 = null;
+		//0 - top, 1- right, 2- down, 3- left ------- going with the clock
+		List<int> alaviableExits = new List<int> ();
+		for (int i = 0; i < 4; i++)
+			alaviableExits.Add (i);
 
 
-			int numberOfExits = 0;
-			for (int i = 0; i < 10; i++) {
+		int numberOfExits = 0;
+		for (int i = 0; i < 10; i++) {
+			numberOfExits = Random.Range (1, 4);
+			if (i > 6 && numberOfExits > 3)
 				numberOfExits = Random.Range (1, 4);
-				if (i > 6 && numberOfExits > 3)
-					numberOfExits = Random.Range (1, 4);
-			}
-
-			GameObject exit = exitOrginal;
-
-			switch (numberOfExits) {
-			case 1:
-				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
-				exit = outerWallTiles [outerWallTiles.Length - 1];
-				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
-				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
-				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
-				break;
-			case 2:
-				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
-				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
-				exit = outerWallTiles [outerWallTiles.Length - 1];
-				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
-				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
-				break;
-			case 3:
-				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
-				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
-				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
-				exit = outerWallTiles [outerWallTiles.Length - 1];
-				exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
-				break;
-			}
-
-
-			if (exitInstance != null)
-				exitInstance.transform.SetParent (itemHolder);
-			if (exitInstance1 != null)
-				exitInstance1.transform.SetParent (itemHolder);
-			if (exitInstance2 != null)
-				exitInstance2.transform.SetParent (itemHolder);
-			if (exitInstance3 != null)
-				exitInstance3.transform.SetParent (itemHolder);
 		}
+
+		GameObject exit = exitOrginal;
+		if (!nextBoard) {
+			if (randomGeneration) {
+				switch (numberOfExits) {
+				case 1:
+					exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+					exit = outerWallTiles [outerWallTiles.Length - 1];
+					exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+					exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+					exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+					break;
+				case 2:
+					exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+					exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+					exit = outerWallTiles [outerWallTiles.Length - 1];
+					exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+					exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+					break;
+				case 3:
+					exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+					exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+					exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
+					exit = outerWallTiles [outerWallTiles.Length - 1];
+					exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+					break;
+				}
+			} else {
+				switch (lastGeneratedLevel) {
+				case 1:
+					exitInstance = ChooseExitPlacement (alaviableExits, exit, true, 1);
+					exit = outerWallTiles [outerWallTiles.Length - 1];
+					exitInstance1 = ChooseExitPlacement (alaviableExits, exit, false);
+					exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+					exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+					break;
+				default:
+					switch (numberOfExits) {
+					case 1:
+						exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+						exit = outerWallTiles [outerWallTiles.Length - 1];
+						exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+						exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+						exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+						break;
+					case 2:
+						exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+						exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+						exit = outerWallTiles [outerWallTiles.Length - 1];
+						exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+						exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+						break;
+					case 3:
+						exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+						exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+						exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
+						exit = outerWallTiles [outerWallTiles.Length - 1];
+						exitInstance = ChooseExitPlacement (alaviableExits, exit, false);
+						break;
+					}
+					break;				
+				}
+			}
+		}
+			
+		if (exitInstance != null)
+			exitInstance.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
+		if (exitInstance1 != null)
+			exitInstance1.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
+		if (exitInstance2 != null)
+			exitInstance2.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
+		if (exitInstance3 != null)
+			exitInstance3.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
 
 		for (int x = -1; x < columns + 1; x++)
 			for (int y = -1; y < rows + 1; y++) {
@@ -167,7 +211,7 @@ public class BoardCycleManager : MonoBehaviour
 
 	Vector3 RandomPosition ()
 	{
-		int randomIndex = Random.Range (0, gridPositions1.Count);
+		int randomIndex = Random.Range (0, nextBoard ? gridPositions1.Count : gridPositions.Count);
 		Vector3 randomPosition = nextBoard ? gridPositions1 [randomIndex] : gridPositions [randomIndex];
 		(nextBoard ? gridPositions1 : gridPositions).RemoveAt (randomIndex);
 		return randomPosition;
@@ -217,8 +261,8 @@ public class BoardCycleManager : MonoBehaviour
 			int enemyCount = (int)Mathf.Log (lastGeneratedLevel, 2f);
 			LayoutObjectAtRandom (enemyTiles, GameObjectType.Enemy, enemyCount, enemyCount);
 		} else {
-			GenerateTemplate (currentLevelTemplate);
-			currentLevelTemplate++;
+			if (stackOfTemplates.Count > 0)
+				SpawnObjectsAtPosition (stackOfTemplates);
 		}
 	}
 
@@ -253,6 +297,13 @@ public class BoardCycleManager : MonoBehaviour
 		for (int i = 0; i < 4; i++)
 			alaviableExits.Add (i);
 
+		int numberOfExits = 0;
+		for (int i = 0; i < 10; i++) {
+			numberOfExits = Random.Range (1, 4);
+			if (i > 6 && numberOfExits > 3)
+				numberOfExits = Random.Range (1, 4);
+		}
+
 		GameObject exit = exitOrginal;
 
 		if (xx < (int)(columns / 2) + 1.5 && xx > (int)(columns / 2) - 1.5 && yy > rows) {
@@ -273,13 +324,63 @@ public class BoardCycleManager : MonoBehaviour
 			alaviableExits.Remove (1);
 		}
 
-		int numberOfExits = 0;
-		for (int i = 0; i < 10; i++) {
-			numberOfExits = Random.Range (1, 4);
-			if (i > 6 && numberOfExits == 3)
-				numberOfExits = Random.Range (1, 4);
+		if (randomGeneration) {
+			switch (numberOfExits) {
+			case 1:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			case 2:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			case 3:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, true);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
+				break;
+			}
+		} else {
+			switch (lastGeneratedLevel) {
+			case 2:
+				exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true, 1);
+				exit = outerWallTiles [outerWallTiles.Length - 1];
+				exitInstance2 = ChooseExitPlacement (alaviableExits, exit, false);
+				exitInstance3 = ChooseExitPlacement (alaviableExits, exit, false);
+				break;
+			default:
+				RandomExit (ref exitInstance1, ref exitInstance2, ref exitInstance3, alaviableExits, exit, numberOfExits);
+				break;
+				
+			}
 		}
 
+		nextBoard = true;
+		if (nextBoard) {
+			if (exitInstance != null)
+				exitInstance.transform.SetParent (itemHolder);
+			if (exitInstance1 != null)
+				exitInstance1.transform.SetParent (itemHolder);
+			if (exitInstance2 != null)
+				exitInstance2.transform.SetParent (itemHolder);
+			if (exitInstance3 != null)
+				exitInstance3.transform.SetParent (itemHolder);
+		}
+
+		//--------------------------------------------
+
+		GameplayManager.instance.SwitchEnemyLists ();
+		SetupScene (level, true);
+
+		GameplayManager.instance.DoingSetup (false);
+	}
+
+	void RandomExit (ref GameObject exitInstance1, ref GameObject exitInstance2, ref GameObject exitInstance3, List<int> alaviableExits, GameObject exit, int numberOfExits)
+	{
 		switch (numberOfExits) {
 		case 1:
 			exitInstance1 = ChooseExitPlacement (alaviableExits, exit, true);
@@ -299,36 +400,43 @@ public class BoardCycleManager : MonoBehaviour
 			exitInstance3 = ChooseExitPlacement (alaviableExits, exit, true);
 			break;
 		}
-
-		if (alaviableExits.Count > 0) {
-			foreach (int i in alaviableExits) {
-				
-			}
-		}
-
-		nextBoard = true;
-		if (nextBoard) {
-			if (exitInstance != null)
-				exitInstance.transform.SetParent (itemHolder);
-			if (exitInstance1 != null)
-				exitInstance1.transform.SetParent (itemHolder);
-			if (exitInstance2 != null)
-				exitInstance2.transform.SetParent (itemHolder);
-			if (exitInstance3 != null)
-				exitInstance3.transform.SetParent (itemHolder);
-		}
-		//--------------------------------------------
-
-		GameplayManager.instance.SwitchEnemyLists ();
-		SetupScene (level, true);
-
-		GameplayManager.instance.DoingSetup (false);
 	}
 
 	GameObject ChooseExitPlacement (List<int> alaviableExitss, GameObject exit, bool isExit)
 	{
 		//0 - top, 1- right, 2- down, 3- left ------- going with the clock
 		int chosenExit = Random.Range (0, alaviableExitss.Count);
+		int found = alaviableExitss [chosenExit];
+		alaviableExitss.RemoveAt (chosenExit);
+		GameObject localExit = exit;
+		Vector3 pos = Vector3.zero;
+		switch (found) {
+		case 0:
+			if (!isExit)
+				localExit = outerWallTiles [Random.Range (0, outerWallTiles.Length - 2)];
+			pos = new Vector3 ((int)(columns / 2), rows, 0);
+			break;
+		case 1:
+			pos = new Vector3 (columns, (int)(rows / 2), 0);
+			break;
+		case 2:
+			pos = new Vector3 ((int)(columns / 2), -1, 0);
+			break;
+		case 3:
+			pos = new Vector3 (-1, (int)(rows / 2), 0);
+			break;
+		default:
+			pos = new Vector3 (-1, (int)(rows / 2), 0);
+			break;
+		}
+
+		return Instantiate (localExit, pos, Quaternion.identity) as GameObject;
+	}
+
+	GameObject ChooseExitPlacement (List<int> alaviableExitss, GameObject exit, bool isExit, int whatExit)
+	{
+		//0 - top, 1- right, 2- down, 3- left ------- going with the clock
+		int chosenExit = whatExit;
 		int found = alaviableExitss [chosenExit];
 		alaviableExitss.RemoveAt (chosenExit);
 		GameObject localExit = exit;
@@ -371,7 +479,7 @@ public class BoardCycleManager : MonoBehaviour
 		Stack<int[]> objectAndPositon = new Stack<int[]> ();
 
 		//TODO change to JSON
-		//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject
+		//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject, 5- pickup
 		switch (templateNumber) {
 		case 0:
 			{
@@ -390,7 +498,7 @@ public class BoardCycleManager : MonoBehaviour
 				break;
 			}
 		}
-		return new MapTemplate (templateNumber, "Board" + templateNumber, "Items" + templateNumber, objectAndPositon, gridPositions);
+		return new MapTemplate (templateNumber, objectAndPositon, gridPositions);
 	}
 
 	public void RandomizeTemplates ()
@@ -398,8 +506,12 @@ public class BoardCycleManager : MonoBehaviour
 		//TODO Make actual templates HERE ~Darius
 		//Template pseudo randomization here
 		//First two are tutorial
-		stackOfTemplates.Push (GenerateTemplate (0));
 		stackOfTemplates.Push (GenerateTemplate (1));
+		currentLevelTemplate++;
+		stackOfTemplates.Push (GenerateTemplate (1));
+		currentLevelTemplate++;
+		stackOfTemplates.Push (GenerateTemplate (0));
+		currentLevelTemplate++;
 		//Next can be randomized
 		/*int randNum = Random.Range (0, countTemplates - 1);
 		stackOfTemplates.Push (GenerateTemplate (randNum));
@@ -415,25 +527,59 @@ public class BoardCycleManager : MonoBehaviour
 	{
 		//TODO rethink this logic ~Darius
 		//I think i need to change logic of gridPositions. That is fucked.
-		int chosenElement = (x > 1 ? x - 1 * rows : x - 1) + y - 1;
+		int chosenElement = (x > 1 ? (x - 1) * rows : x - 1) + y - 1;
 		int[] arrayOfObjects = new int[] { chosenElement, chosenObject };
 		return arrayOfObjects;
+	}
+
+	void SpawnObjectsAtPosition (Stack<MapTemplate> tileStack)
+	{
+		MapTemplate temp = tileStack.Pop ();
+		if (nextBoard) {
+			gridPositions = temp.gridPositions;
+		} else {
+			gridPositions1 = temp.gridPositions;
+		}
+
+
+		while (temp.objectAndPosition.Count > 0) {
+			int[] arr = temp.objectAndPosition.Pop ();
+			Vector3 randomPosition = (nextBoard ? gridPositions1 : gridPositions) [arr [0]];
+
+			GameObject[] tileArray = new GameObject[0];
+			switch (arr [1]) {
+			case 0:
+				tileArray = enemyTiles;
+				break;
+			case 1:
+				break;
+			case 2:
+				tileArray = wallTiles;
+				break;
+			case 5:
+				tileArray = foodTiles;
+				break;
+			}
+			GameObject tileChoice = tileArray [Random.Range (0, tileArray.Length)];
+
+			GameObject instance = Instantiate (tileChoice, randomPosition, Quaternion.identity) as GameObject;
+			if (instance.GetComponent<EnemyController> () != null) {
+				instance.GetComponent<EnemyController> ().AddMeToList (nextBoard ? false : true);
+			}
+			instance.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
+		}
 	}
 
 	//Represent template
 	struct MapTemplate
 	{
 		public int number;
-		public String boardHolder;
-		public String itemHolder;
 		public Stack<int[]> objectAndPosition;
-		private List<Vector3> gridPositions;
+		public List<Vector3> gridPositions;
 
-		public MapTemplate (int number, String boardHolder, String itemHolder, Stack<int[]> objectAndPosition, List<Vector3> gridPositions)
+		public MapTemplate (int number, Stack<int[]> objectAndPosition, List<Vector3> gridPositions)
 		{
 			this.number = number;
-			this.boardHolder = boardHolder;
-			this.itemHolder = itemHolder;
 			this.objectAndPosition = objectAndPosition;
 			this.gridPositions = gridPositions;
 		}
