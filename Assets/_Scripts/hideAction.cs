@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class wardrobe : MonoBehaviour {
+public class hideAction : MonoBehaviour {
 
 
 	private Animator animator;
@@ -17,21 +17,19 @@ public class wardrobe : MonoBehaviour {
 		myRigidbody = GetComponent<Rigidbody2D>();
 		coxColl = GetComponent<BoxCollider2D> ();
 	}
-		
+
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Player") {
 			animator.SetBool("isOpen", true);
-		
+
 		}
-	
-	
+
+
 	}
-		
+
 
 	void OnTriggerExit2D(Collider2D other){
 		animator.SetBool ("isOpen", false);
-		}
-
-
+	}
 }
