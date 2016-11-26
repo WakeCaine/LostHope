@@ -10,6 +10,7 @@ public class pgirl : MonoBehaviour {
 	public float playerSpeed = 0.8f;
 	private float speed = 3f;
 	private bool facingRight;
+	private Animator animator;
 
 
 	public Sprite girlUp;
@@ -25,7 +26,7 @@ public class pgirl : MonoBehaviour {
 
 		transform.position = new Vector3 (0,0, 0);
 
-
+		animator = this.GetComponent<Animator> ();
 		spriteRenderer = GetComponent<SpriteRenderer>(); // we are accessing the SpriteRenderer that is attached to the Gameobject
 
 	
@@ -41,6 +42,18 @@ public class pgirl : MonoBehaviour {
 		float vertical = Input.GetAxis ("Vertical");
 
 		//GetComponent<Rigidbody2D>().velocity = new Vector2 (moveX * playerSpeed, moveY * playerSpeed);
+
+
+		if (vertical > 0)
+		{
+			animator.SetInteger("direction", 2);
+		}
+		else if (vertical < 0)
+		{
+			animator.SetInteger("direction", 0);
+		}
+
+
 
 		Flip (horizontal);
 
