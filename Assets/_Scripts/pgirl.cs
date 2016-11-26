@@ -19,7 +19,6 @@ public class pgirl : MonoBehaviour {
 
 	private SpriteRenderer spriteRenderer;
 
-	// Use this for initialization
 	void Start () {
 
 		facingRight = true;
@@ -44,35 +43,46 @@ public class pgirl : MonoBehaviour {
 		//GetComponent<Rigidbody2D>().velocity = new Vector2 (moveX * playerSpeed, moveY * playerSpeed);
 
 
-		if (vertical > 0)
-		{
-			animator.SetInteger("direction", 2);
-		}
-		else if (vertical < 0)
-		{
-			animator.SetInteger("direction", 0);
-		}
-
+	//	if (vertical > 0)
+	//	{
+	//		animator.SetInteger("direction", 2);
+	//	}
+	//	else if (vertical < 0)
+	//	{
+	//		animator.SetInteger("direction", 0);
+	//	}
+	//	else if (horizontal > 0)
+	//	{
+	//		animator.SetInteger("direction", 0);
+	//	}
+	//	else if (horizontal < 0)
+	//	{
+	//		animator.SetInteger("direction", 0);
+	//	}
 
 
 		Flip (horizontal);
 
 		if (Input.GetKey (KeyCode.RightArrow)) {
 			transform.Translate(Vector2.right * playerSpeed * Time.deltaTime);
+			animator.SetInteger("direction", 0);
 		
 		}
 		else if (Input.GetKey (KeyCode.LeftArrow)) {
 			transform.Translate(-Vector2.left * playerSpeed * Time.deltaTime);  
+			animator.SetInteger("direction", 0);
 
 		}
 
 		if (Input.GetKey (KeyCode.UpArrow)) {
 			transform.Translate(Vector2.up * playerSpeed * Time.deltaTime);
+			animator.SetInteger("direction", 2);
 
 		}
 		else if (Input.GetKey (KeyCode.DownArrow)) {
 			transform.Translate(-Vector2.up * playerSpeed * Time.deltaTime);
-			spriteRenderer.sprite = girlUp;
+			animator.SetInteger("direction", 0);
+		
 
 		}
 			
