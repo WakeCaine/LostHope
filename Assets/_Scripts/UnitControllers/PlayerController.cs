@@ -270,7 +270,7 @@ public class PlayerController : MovingObject
 			flashPos = 1.0f;
 		}
 
-		if (hitInf.collider && distance < oRange) {
+		if (hitInf.collider && hitInf.collider.tag != "Enemy" && distance < oRange) {
 			oRange = distance;
 		}
 		flash.range = oRange;
