@@ -55,7 +55,7 @@ public class hideAction : MonoBehaviour {
 
 	void ItemOpen(){
 		animator.SetBool ("isOpen", true);
-		Destroy (girl);
+	//	GameObject.Find("girl").GetComponent().enabled = false;
 
 	}
 
