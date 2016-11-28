@@ -19,7 +19,7 @@ public class TextBoxManager : MonoBehaviour
 	public int currentLine = 0;
 	public int endAtLine = 0;
 
-	public PlayerController player;
+	public HeroPlayerController player;
 
 	[Tooltip ("0 - Zoom + dialog box, 1 - Background distorted + characters avatars on screen")]
 	public int dialogueMode = 0;
@@ -33,7 +33,7 @@ public class TextBoxManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		player = FindObjectOfType<PlayerController> ();
+		player = FindObjectOfType<HeroPlayerController> ();
 		camera = GameObject.FindGameObjectWithTag ("MainCamera");
 		currentZoom = (camera.GetComponent<Camera> () as Camera).fieldOfView;
 

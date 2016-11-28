@@ -31,55 +31,13 @@ public class UIManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (Input.GetKey (KeyCode.Return)) {
+			LoadLevel ("Does not matter");
+		}
+
 		if (soundManagerMenu.musicEnded && levelToLoad != "") {
 			SceneManager.LoadScene (1);
 		}
-		/*if(Application.loadedLevel == 1)
-		{
-			if (rightBound.enemyScore >= 7 && !isFinished)
-			{
-				isFinished = true;
-				enemyWon = true;
-				playerWon = false;
-			}
-			else if (leftBound.playerScore >= 7 && !isFinished)
-			{
-				isFinished = true;
-				enemyWon = false;
-				playerWon = true;
-			}
-
-			if (isFinished)
-			{
-				showFinished();
-			}
-		}
-
-		if (Input.GetKeyDown(KeyCode.P) && !isFinished)
-		{
-			pauseControl();
-		}
-
-		if(Time.timeScale == 0)
-		{
-			foreach(GameObject g in pauseObjects)
-			{
-				if(g.name == "PauseText")
-				{
-					g.SetActive(true);
-				}
-			}
-		}
-		else
-		{
-			foreach (GameObject g in pauseObjects)
-			{
-				if(g.name == "PauseText")
-				{
-					g.SetActive(false);
-				}
-			}
-		}*/
 	}
 
 	public void pauseControl ()
@@ -95,36 +53,22 @@ public class UIManager : MonoBehaviour
 
 	public void showPaused ()
 	{
-		/*foreach(GameObject g in pauseObjects)
-		{
-			g.SetActive(true);
-		}*/
+		
 	}
 
 	public void hidePaused ()
 	{
-		/*foreach(GameObject g in pauseObjects)
-		{
-			g.SetActive(false);
-		}*/
+		
 	}
 
 	public void showFinished ()
 	{
-		/*foreach (GameObject g in pauseObjects) {
-			g.SetActive (true);
-		}
-
-		foreach (GameObject g in finishObjects) {
-			g.SetActive (true);
-		}*/
+		
 	}
 
 	public void hideFinished ()
 	{
-		/*foreach (GameObject g in finishObjects) {
-			g.SetActive (false);
-		}*/
+		
 	}
 
 	public void LoadLevel (string level)
@@ -134,4 +78,5 @@ public class UIManager : MonoBehaviour
 		anim.SetTrigger ("GameStart");	
 		soundManagerMenu.SilenceMusic ();
 	}
+
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GameplayManager : MonoBehaviour
 {
+	public float letterPause = 0.05f;
 	public float levelStartDelay = 3f;
 	public float turnDelay = .3f;
 	public static GameplayManager instance = null;
@@ -14,9 +15,11 @@ public class GameplayManager : MonoBehaviour
 	[HideInInspector] public bool playersTurn = true;
 	public bool generateNextBoard = false;
 	public bool changeBoard = false;
+	public string startingLevelMessage;
 
 	private Text levelText;
 	private GameObject levelImage;
+	GameObject dialogObject;
 	public bool doingSetup = true;
 	private int level = 1;
 	private List<EnemyController> enemies;
@@ -40,6 +43,7 @@ public class GameplayManager : MonoBehaviour
 		enemies = new List<EnemyController> ();
 		enemiesNext = new List<EnemyController> ();
 		boardScript = GetComponent<BoardCycleManager> ();
+		dialogObject = GameObject.Find ("NewDialog");
 		InitGame ();
 	}
 
@@ -64,15 +68,28 @@ public class GameplayManager : MonoBehaviour
 		doingSetup = true;
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
-		levelText.text = "???????????????????????????";
+		levelText.text = "";
+		startingLevelMessage = "Where am i? Mom? Where are you...";
 		levelImage.SetActive (true);
-		Invoke ("HideLevelImage", levelStartDelay);
+		StartCoroutine (TypeText ());
 
 		enemies.Clear ();
 		boardScript.SetupScene (level, generateNextBoard);
 		level += 1;
 		generateNextBoard = true;
 		boardScript.SetupScene (level, generateNextBoard);
+	}
+
+	IEnumerator TypeText ()
+	{
+		foreach (char letter in startingLevelMessage.ToCharArray()) {
+			levelText.text += letter;
+			//if (typeSound1 && typeSound2)
+			//SoundManager.instance.RandomizeSfx (typeSound1, typeSound2);
+			yield return 0;
+			yield return new WaitForSeconds (letterPause);
+		}
+		Invoke ("HideLevelImage", levelStartDelay);
 	}
 
 	private void HideLevelImage ()
@@ -104,6 +121,11 @@ public class GameplayManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
+		} else if (Input.GetKeyDown (KeyCode.P)) {
+			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
+		}
 		if (doingSetup) {
 			return;
 		}
