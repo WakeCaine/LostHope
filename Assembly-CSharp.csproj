@@ -38,10 +38,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
-      <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>E:/tools/Unity52/Editor/Data/Managed/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+      <HintPath>E:/tools/Unity52/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,12 @@
      <Compile Include="Assets\_Scripts\PathFinding\UnitTest\Unit.cs" />
      <Compile Include="Assets\_Scripts\Picking.cs" />
      <Compile Include="Assets\_Scripts\PlayerGirl.cs" />
-     <Compile Include="Assets\_Scripts\Prototyping\PlayerController1.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\Managers\BoardCycleManager.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\Managers\GameplayManager.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\MovingCameraController.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\PrototypeLoader.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\UnitControllers\EnemyController.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\UnitControllers\HeroPlayerController.cs" />
      <Compile Include="Assets\_Scripts\SoundManager.cs" />
      <Compile Include="Assets\_Scripts\UI\SoundManagerMenu.cs" />
      <Compile Include="Assets\_Scripts\UI\TextTyper.cs" />
@@ -72,16 +77,19 @@
      <Compile Include="Assets\_Scripts\Wall.cs" />
      <Compile Include="Assets\_Scripts\boxController.cs" />
      <Compile Include="Assets\_Scripts\boxOpen.cs" />
+     <Compile Include="Assets\_Scripts\door.cs" />
+     <Compile Include="Assets\_Scripts\hideAction.cs" />
+     <Compile Include="Assets\_Scripts\pgirl.cs" />
      <Compile Include="Assets\_Scripts\push.cs" />
      <Compile Include="Assets\_Scripts\wardrobe.cs" />
      <Compile Include="Assets\boxController.cs" />
      <None Include="Assets\Text\example.txt" />
      <None Include="Assets\Fonts\OFL.txt" />
  <Reference Include="UnityEngine.UI">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/tools/Unity52/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ <HintPath>E:/tools/Unity52/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
