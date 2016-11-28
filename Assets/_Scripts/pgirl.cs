@@ -3,8 +3,6 @@ using System.Collections;
 
 public class pgirl : MonoBehaviour {
 
-	private float moveX;
-	private float moveY;
 
 	public int batteriesCount;
 	public float playerSpeed = 0.8f;
@@ -12,8 +10,6 @@ public class pgirl : MonoBehaviour {
 	private bool facingRight;
 	private Animator animator;
 
-
-	public Sprite girlUp;
 
 
 
@@ -40,10 +36,7 @@ public class pgirl : MonoBehaviour {
 		float horizontal = Input.GetAxis ("Horizontal");
 		float vertical = Input.GetAxis ("Vertical");
 
-		//GetComponent<Rigidbody2D>().velocity = new Vector2 (moveX * playerSpeed, moveY * playerSpeed);
-
 	
-
 
 		Flip (horizontal);
 
@@ -53,7 +46,7 @@ public class pgirl : MonoBehaviour {
 		
 		}
 		else if (Input.GetKey (KeyCode.LeftArrow)) {
-			transform.Translate(-Vector2.left * playerSpeed * Time.deltaTime);  
+			transform.Translate(-Vector2.right * playerSpeed * Time.deltaTime);  
 			animator.SetInteger("direction", 0);
 
 		}
