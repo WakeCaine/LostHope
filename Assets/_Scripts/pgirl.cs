@@ -87,7 +87,7 @@ public class pgirl : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other){
 
-		if (other.gameObject.CompareTag ("Batteries")) 
+		if (other.gameObject.CompareTag ("Soda")) 
 		{
 			other.gameObject.SetActive (false);
 			batteriesCount++;
