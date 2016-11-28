@@ -27,4 +27,11 @@ public class wardrobe : MonoBehaviour {
 	
 	
 	}
+		
+
+	void OnTriggerExit2D(Collider2D other){
+		animator.SetBool ("isOpen", false);
+		}
+
+
 }
