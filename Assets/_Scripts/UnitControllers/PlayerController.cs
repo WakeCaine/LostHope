@@ -34,6 +34,7 @@ public class PlayerController : MovingObject
 
 	private float dir = 1;
 
+
 	// Use this for initialization
 	protected override void Start ()
 	{
@@ -44,7 +45,7 @@ public class PlayerController : MovingObject
 		foodText.text = "Food: " + food;
 
 		// Get Light component of flashlight and get its range
-		flash = transform.GetChild (1).GetComponent<Light>();
+		flash = transform.GetChild (1).GetComponent<Light> ();
 
 		base.Start ();
 	}
@@ -182,66 +183,67 @@ public class PlayerController : MovingObject
 		}
 	}
 
-	private void flashLightDistance () {
+	private void flashLightDistance ()
+	{
 		// Raycast
 		RaycastHit hitInf;
-		bool hit = Physics.Linecast(transform.position,transform.position, out hitInf, 1 << LayerMask.NameToLayer("BlockingLayer"));
+		bool hit = Physics.Linecast (transform.position, transform.position, out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
 
 		float distance = 0f;
 
 		// get spotLight transform
-		Transform fLight = transform.GetChild(1);
+		Transform fLight = transform.GetChild (1);
 		// get Light_Collider transform
-		Transform lT = transform.GetChild(2);
+		Transform lT = transform.GetChild (2);
 
 		// Update flashlight position, flashlight rotation and light collider rotation
 		// 1 is right, 2 is left, 3 is down and 4 is up
 		if (dir == 1) {
-			hit = Physics.Linecast(transform.position,new Vector2 (transform.position.x + 10,transform.position.y), out hitInf, 1 << LayerMask.NameToLayer("BlockingLayer"));
-			Debug.DrawLine (transform.position,new Vector2 (transform.position.x + 10,transform.position.y));
+			hit = Physics.Linecast (transform.position, new Vector2 (transform.position.x + 10, transform.position.y), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
+			Debug.DrawLine (transform.position, new Vector2 (transform.position.x + 10, transform.position.y));
 
-			if(hitInf.collider) {
+			if (hitInf.collider) {
 				distance = hitInf.collider.transform.position.x - transform.position.x;
 				print (distance);
 			}
 				
-			lT.localPosition = new Vector3(flashPos, 0.0f, 0.0f);
-			lT.rotation = Quaternion.Euler(0, 0, 90);
+			lT.localPosition = new Vector3 (flashPos, 0.0f, 0.0f);
+			lT.rotation = Quaternion.Euler (0, 0, 90);
 			fLight.rotation = Quaternion.Euler (0, 60, 0);
 		} else if (dir == 2) {
-			hit = Physics.Linecast(transform.position,new Vector2 (transform.position.x - 10,transform.position.y), out hitInf, 1 << LayerMask.NameToLayer("BlockingLayer"));
-			Debug.DrawLine (transform.position,new Vector2 (transform.position.x - 10,transform.position.y));
+			hit = Physics.Linecast (transform.position, new Vector2 (transform.position.x - 10, transform.position.y), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
+			Debug.DrawLine (transform.position, new Vector2 (transform.position.x - 10, transform.position.y));
 
-			if(hitInf.collider) {
+			if (hitInf.collider) {
 				distance = transform.position.x - hitInf.collider.transform.position.x;
 				print (distance);
 			}
 
-			lT.rotation = Quaternion.Euler(0, 0, -90);
-			lT.localPosition = new Vector3(-flashPos, 0.0f, 0.0f);
+			lT.rotation = Quaternion.Euler (0, 0, -90);
+			lT.localPosition = new Vector3 (-flashPos, 0.0f, 0.0f);
 			fLight.rotation = Quaternion.Euler (0, -60, 0);
 		} else if (dir == 3) {
-			hit = Physics.Linecast(transform.position,new Vector2 (transform.position.x,transform.position.y - 10), out hitInf, 1 << LayerMask.NameToLayer("BlockingLayer"));
-			Debug.DrawLine (transform.position,new Vector2 (transform.position.x,transform.position.y - 10));
+			hit = Physics.Linecast (transform.position, new Vector2 (transform.position.x, transform.position.y - 10), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
+			Debug.DrawLine (transform.position, new Vector2 (transform.position.x, transform.position.y - 10));
 
-			if(hitInf.collider) {
+			if (hitInf.collider) {
 				distance = transform.position.y - hitInf.collider.transform.position.y;
 				print (distance);
 			}
 
 			lT.localPosition = new Vector3 (0.0f, -flashPos, 0.0f);
-			lT.rotation = Quaternion.Euler(0, 0, 0);
+			lT.rotation = Quaternion.Euler (0, 0, 0);
 			fLight.rotation = Quaternion.Euler (60, 0, 0);
 		} else if (dir == 4) {
-			hit = Physics.Linecast(transform.position,new Vector2 (transform.position.x,transform.position.y + 10), out hitInf, 1 << LayerMask.NameToLayer("BlockingLayer"));
+			hit = Physics.Linecast (transform.position, new Vector2 (transform.position.x, transform.position.y + 10), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
 
-			if(hitInf.collider) {
+			if (hitInf.collider) {
 				distance = hitInf.collider.transform.position.y - transform.position.y;
 				print (distance);
 			}
 
 			lT.localPosition = new Vector3 (0.0f, flashPos, 0.0f);
-			lT.rotation = Quaternion.Euler(0, 0, 180);
+			lT.rotation = Quaternion.Euler (0, 0, 180);
 			fLight.rotation = Quaternion.Euler (-60, 0, 0);
 		}
 		print (hit);

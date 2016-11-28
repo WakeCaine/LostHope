@@ -26,6 +26,10 @@ public class HeroPlayerController : MovingObject
 	private GameplayManager gameManager;
 	private int food;
 
+	public float flashPowerLevel = 100f;
+	private bool flashLight = false;
+
+	private float dir = 1;
 
 	// Use this for initialization
 	protected override void Start ()
@@ -33,6 +37,7 @@ public class HeroPlayerController : MovingObject
 		//animator = GetComponent<Animator> ();
 		gameManager = GameObject.FindObjectOfType<GameplayManager> ();
 		sprite = GetComponent<SpriteRenderer> ();
+		animator = this.GetComponent<Animator> ();
 		food = GameplayManager.instance.playerFoodPoints;
 		//foodText.text = "Food: " + food;
 
@@ -64,9 +69,26 @@ public class HeroPlayerController : MovingObject
 		}
 	}
 
-	void FixedUpdate ()
+	void LateUpdate ()
 	{
-		
+		if (flashLight) {
+			flashPowerLevel -= 0.05f;
+		}
+		if (flashPowerLevel < 0) {
+			flashPowerLevel = 0;
+		}
+
+		if (Input.GetKeyDown ("f")) {
+			if (flashLight) {
+				transform.GetChild (1).gameObject.SetActive (false);
+				transform.GetChild (2).gameObject.SetActive (false);
+				flashLight = false;
+			} else {
+				transform.GetChild (1).gameObject.SetActive (true);
+				transform.GetChild (2).gameObject.SetActive (true);
+				flashLight = true;
+			}
+		}
 	}
 
 	protected override void OnCantMove<T> (T component)
@@ -108,17 +130,27 @@ public class HeroPlayerController : MovingObject
 
 	private void OnTriggerEnter (Collider other)
 	{
+		Debug.LogWarning ("Hue hue");
 		if (other.tag == "Exit") {
 			enabled = false;
+			other.gameObject.GetComponent<Animator> ().SetBool ("isOpen", true);
 			Invoke ("Restart", restartLevelDelay);
 		} else if (other.tag == "Food") {
-			//food += pointsPerFood;
-			//foodText.text = "+" + pointsPerFood + " Food: " + food;
+			// Temp battery
+			flashPowerLevel += 20f;
+
+			if (flashPowerLevel > 100f) {
+				flashPowerLevel = 100f;
+			}
 			SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
-			//food += pointsPerSoda;
-			//foodText.text = "+" + pointsPerSoda + " Food: " + food;
+			// Temp battery
+			flashPowerLevel += 20f;
+
+			if (flashPowerLevel > 100f) {
+				flashPowerLevel = 100f;
+			}
 			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "NPC") {
@@ -132,8 +164,21 @@ public class HeroPlayerController : MovingObject
 		base.AttemptMove<T> (xDir, yDir);
 		if (xDir < 0) {
 			sprite.flipX = true;
+			dir = 2;
+			animator.SetInteger ("direction", 0);
+
 		} else if (xDir > 0) {
 			sprite.flipX = false;
+			dir = 1;
+			animator.SetInteger ("direction", 0);
+		}
+
+		if (yDir < 0) {
+			dir = 3;
+			animator.SetInteger ("direction", 0);
+		} else if (yDir > 0) {
+			dir = 4;
+			animator.SetInteger ("direction", 2);
 		}
 
 		RaycastHit hit;
@@ -153,5 +198,10 @@ public class HeroPlayerController : MovingObject
 			SoundManager.instance.RandomizeSfx (gameOverSound);
 			GameplayManager.instance.GameOver ();
 		}
+	}
+
+	public float GetDirection ()
+	{
+		return dir;
 	}
 }

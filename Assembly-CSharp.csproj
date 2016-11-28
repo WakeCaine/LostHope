@@ -61,6 +61,7 @@
      <Compile Include="Assets\_Scripts\PathFinding\UnitTest\Unit.cs" />
      <Compile Include="Assets\_Scripts\Picking.cs" />
      <Compile Include="Assets\_Scripts\PlayerGirl.cs" />
+     <Compile Include="Assets\_Scripts\Prototyping_D\LightDetect.cs" />
      <Compile Include="Assets\_Scripts\Prototyping_D\Managers\BoardCycleManager.cs" />
      <Compile Include="Assets\_Scripts\Prototyping_D\Managers\GameplayManager.cs" />
      <Compile Include="Assets\_Scripts\Prototyping_D\MovingCameraController.cs" />
