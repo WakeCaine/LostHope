@@ -54,6 +54,7 @@ public class BoardCycleManager : MonoBehaviour
 	public GameObject[] foodTiles;
 	public GameObject[] enemyTiles;
 	public GameObject[] outerWallTiles;
+	public GameObject flashLight;
 
 	public bool nextBoard = false;
 	public bool randomGeneration = false;
@@ -68,7 +69,7 @@ public class BoardCycleManager : MonoBehaviour
 	private Vector3 lastPlayerPosition;
 	private Light roomLight;
 
-	void Start ()
+	void Awake ()
 	{
 		RandomizeTemplates ();
 		nextLevelYPlacement = columns + 1;
@@ -483,18 +484,16 @@ public class BoardCycleManager : MonoBehaviour
 		switch (templateNumber) {
 		case 0:
 			{
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 2));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 3));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
+				//objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 1));
 				break;
 			}
 		case 1:
 			{
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
+				objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 3));
+				//objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
+				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
+				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
+				//objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
 				break;
 			}
 		}
@@ -535,7 +534,7 @@ public class BoardCycleManager : MonoBehaviour
 	void SpawnObjectsAtPosition (Stack<MapTemplate> tileStack)
 	{
 		MapTemplate temp = tileStack.Pop ();
-		if (nextBoard) {
+		if (!nextBoard) {
 			gridPositions = temp.gridPositions;
 		} else {
 			gridPositions1 = temp.gridPositions;
@@ -557,7 +556,7 @@ public class BoardCycleManager : MonoBehaviour
 				tileArray = wallTiles;
 				break;
 			case 5:
-				tileArray = foodTiles;
+				tileArray = new GameObject[] { flashLight };
 				break;
 			}
 			GameObject tileChoice = tileArray [Random.Range (0, tileArray.Length)];

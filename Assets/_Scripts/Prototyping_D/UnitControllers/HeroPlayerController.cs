@@ -30,6 +30,7 @@ public class HeroPlayerController : MovingObject
 	private bool flashLight = false;
 
 	private float dir = 1;
+	private bool pickedFlashlight = false;
 
 	// Use this for initialization
 	protected override void Start ()
@@ -93,8 +94,8 @@ public class HeroPlayerController : MovingObject
 
 	protected override void OnCantMove<T> (T component)
 	{
-		Wall hitWall = component as Wall;
-		hitWall.DamageWall (wallDamage);
+		//Wall hitWall = component as Wall;
+		//hitWall.DamageWall (wallDamage);
 		//animator.SetTrigger ("playerChop");
 	}
 

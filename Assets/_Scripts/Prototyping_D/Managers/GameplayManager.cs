@@ -18,6 +18,7 @@ public class GameplayManager : MonoBehaviour
 	public string startingLevelMessage;
 
 	private Text levelText;
+	private Text dialogText;
 	private GameObject levelImage;
 	GameObject dialogObject;
 	public bool doingSetup = true;
@@ -68,8 +69,10 @@ public class GameplayManager : MonoBehaviour
 		doingSetup = true;
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
+		dialogText = GameObject.Find ("DialogText").GetComponent<Text> ();
 		levelText.text = "";
 		startingLevelMessage = "Where am i? Mom? Where are you...";
+		dialogText.text = "Press F to turn on the flashlight. The more you use it. The more power is drained.\n Press P for more tips.";
 		levelImage.SetActive (true);
 		StartCoroutine (TypeText ());
 
@@ -95,7 +98,8 @@ public class GameplayManager : MonoBehaviour
 	private void HideLevelImage ()
 	{
 		levelImage.SetActive (false);
-		doingSetup = false;
+		dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
+		doingSetup = true;
 	}
 
 	public void GameOver ()
@@ -125,6 +129,11 @@ public class GameplayManager : MonoBehaviour
 			Application.Quit ();
 		} else if (Input.GetKeyDown (KeyCode.P)) {
 			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
+			if (doingSetup) {
+				doingSetup = false;
+			} else if (!doingSetup) {
+				doingSetup = true;
+			}
 		}
 		if (doingSetup) {
 			return;
