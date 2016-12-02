@@ -32,7 +32,15 @@ public class HeroPlayerController : MovingObject
 	private float dir = 1;
 	private bool pickedFlashlight = false;
 
+	GameObject batteryImage;
+
 	// Use this for initialization
+
+	void Awake ()
+	{
+		
+	}
+
 	protected override void Start ()
 	{
 		//animator = GetComponent<Animator> ();
@@ -40,6 +48,8 @@ public class HeroPlayerController : MovingObject
 		sprite = GetComponent<SpriteRenderer> ();
 		animator = this.GetComponent<Animator> ();
 		food = GameplayManager.instance.playerFoodPoints;
+		batteryImage = GameObject.Find ("Battery");
+		batteryImage.SetActive (false);
 		//foodText.text = "Food: " + food;
 
 		base.Start ();
@@ -80,6 +90,7 @@ public class HeroPlayerController : MovingObject
 		}
 
 		if (Input.GetKeyDown ("f")) {
+			if (pickedFlashlight)
 			if (flashLight) {
 				transform.GetChild (1).gameObject.SetActive (false);
 				transform.GetChild (2).gameObject.SetActive (false);
@@ -152,6 +163,12 @@ public class HeroPlayerController : MovingObject
 			if (flashPowerLevel > 100f) {
 				flashPowerLevel = 100f;
 			}
+			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
+			other.gameObject.SetActive (false);
+		} else if (other.tag == "Flashlight") {
+			// Temp battery
+			pickedFlashlight = true;
+			batteryImage.SetActive (true);
 			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "NPC") {

@@ -55,6 +55,7 @@ public class BoardCycleManager : MonoBehaviour
 	public GameObject[] enemyTiles;
 	public GameObject[] outerWallTiles;
 	public GameObject flashLight;
+	public GameObject teddy;
 
 	public bool nextBoard = false;
 	public bool randomGeneration = false;
@@ -485,6 +486,9 @@ public class BoardCycleManager : MonoBehaviour
 		case 0:
 			{
 				//objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (5, 4, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 4));
 				break;
 			}
 		case 1:
@@ -540,6 +544,13 @@ public class BoardCycleManager : MonoBehaviour
 			gridPositions1 = temp.gridPositions;
 		}
 
+		if (temp.objectAndPosition.Count == 0) {
+			LayoutObjectAtRandom (wallTiles, GameObjectType.InnerWall, wallCount.minimum, wallCount.maximum);
+			LayoutObjectAtRandom (foodTiles, GameObjectType.Item, foodCount.minimum, foodCount.maximum);
+			int enemyCount = (int)Mathf.Log (lastGeneratedLevel, 2f);
+			LayoutObjectAtRandom (enemyTiles, GameObjectType.Enemy, enemyCount, enemyCount);
+		}
+
 
 		while (temp.objectAndPosition.Count > 0) {
 			int[] arr = temp.objectAndPosition.Pop ();
@@ -558,6 +569,9 @@ public class BoardCycleManager : MonoBehaviour
 			case 5:
 				tileArray = new GameObject[] { flashLight };
 				break;
+			case 6:
+				tileArray = new GameObject[] { teddy };
+				break;
 			}
 			GameObject tileChoice = tileArray [Random.Range (0, tileArray.Length)];
 
@@ -565,6 +579,7 @@ public class BoardCycleManager : MonoBehaviour
 			if (instance.GetComponent<EnemyController> () != null) {
 				instance.GetComponent<EnemyController> ().AddMeToList (nextBoard ? false : true);
 			}
+
 			instance.transform.SetParent (nextBoard ? itemHolder1 : itemHolder);
 		}
 	}

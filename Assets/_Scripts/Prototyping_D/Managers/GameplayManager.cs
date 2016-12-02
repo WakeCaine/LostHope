@@ -128,12 +128,25 @@ public class GameplayManager : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			Application.Quit ();
 		} else if (Input.GetKeyDown (KeyCode.P)) {
-			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
 			if (doingSetup) {
 				doingSetup = false;
+				int tips = Random.Range (0, 5);
+				if (tips == 0) {
+					dialogText.text = "Press F to turn on the flashlight. The more you use it. The more power is drained.";
+				} else if (tips == 1) {
+					dialogText.text = "Press Esc to exit the game.";
+				} else if (tips == 2) {
+					dialogText.text = "No more tips, silly!";
+				} else if (tips == 3) {
+					dialogText.text = "NPCs don't exist yet. Sorry.";
+				} else if (tips == 4) {
+					dialogText.text = "Level templates are in construction. Puzzles, enemies and even more fun...";
+				}
+				dialogText.text += " \nPress P for more tips."; 
 			} else if (!doingSetup) {
 				doingSetup = true;
 			}
+			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
 		}
 		if (doingSetup) {
 			return;

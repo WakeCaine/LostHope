@@ -113,7 +113,6 @@ public class LightDetect : MonoBehaviour
 			lT.localScale = new Vector3 (1, 1, 1);
 			flashPos = 1.0f;
 		}
-
 		if (hitInf.collider && hitInf.collider.tag != "Enemy" && distance < oRange) {
 			oRange = distance;
 		}
