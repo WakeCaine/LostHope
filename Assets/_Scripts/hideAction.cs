@@ -19,6 +19,7 @@ public class hideAction : MonoBehaviour {
 		animator = GetComponent<Animator> ();
 		myRigidbody = GetComponent<Rigidbody2D>();
 		coxColl = GetComponent<BoxCollider2D> ();
+		girl = GameObject.Find ("girl");
 
 		isTouching = false;
 	}
@@ -26,19 +27,27 @@ public class hideAction : MonoBehaviour {
 
 	void Update() 
 	{
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			if (isTouching)
-				ItemOpen ();
-		
-		}
+		if (isTouching) {
 
+
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				ItemOpen ();
+			} 
+
+
+
+			if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			animator.SetBool ("isOpen", false);
+			girl.SetActive (true);
+			
+			}
+		}
 	}
+
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Player"){
 			isTouching = true;
-
-			//animator.SetBool("isOpen", true);
 
 		}
 
@@ -55,8 +64,15 @@ public class hideAction : MonoBehaviour {
 
 	void ItemOpen(){
 		animator.SetBool ("isOpen", true);
-		GameObject.Find ("girl").SetActive (false);
+		girl.SetActive (false);
+	
 	}
+
+	//void ItemClosed(){
+	//	animator.SetBool ("isOpen", false);
+	//	GameObject.Find ("girl").SetActive (true);
+	
+	//}
 
 
 

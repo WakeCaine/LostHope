@@ -18,6 +18,7 @@ public class GameplayManager : MonoBehaviour
 	public string startingLevelMessage;
 
 	private Text levelText;
+	private GameObject player;
 	private GameObject levelImage;
 	GameObject dialogObject;
 	public bool doingSetup = true;
@@ -25,6 +26,16 @@ public class GameplayManager : MonoBehaviour
 	private List<EnemyController> enemies;
 	private List<EnemyController> enemiesNext;
 	private bool enemiesMoving;
+
+	private Image BatteryLevel;
+	public SpriteRenderer spr;
+	public float flashPowerLevel;
+	public Sprite bate1;
+	public Sprite bate2;
+	public Sprite bate3;
+	public Sprite bate4;
+
+
 
 	public int Level {
 		get { return level; }
@@ -43,6 +54,12 @@ public class GameplayManager : MonoBehaviour
 		enemies = new List<EnemyController> ();
 		enemiesNext = new List<EnemyController> ();
 		boardScript = GetComponent<BoardCycleManager> ();
+
+		spr = GetComponent<SpriteRenderer>();
+		BatteryLevel = GetComponent<Image> ();
+
+		spr = GameObject.Find("Batterylevel").GetComponent<SpriteRenderer>();
+
 		dialogObject = GameObject.Find ("NewDialog");
 		InitGame ();
 	}
@@ -69,7 +86,7 @@ public class GameplayManager : MonoBehaviour
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
 		levelText.text = "";
-		startingLevelMessage = "Where am i? Mom? Where are you...";
+		startingLevelMessage = "Where am I? Mom? Where are you...";
 		levelImage.SetActive (true);
 		StartCoroutine (TypeText ());
 
@@ -130,6 +147,27 @@ public class GameplayManager : MonoBehaviour
 			return;
 		}
 		StartCoroutine (MoveEnemies ());
+
+
+
+		float flashPowerLevel = player.GetComponent<HeroPlayerController> ().flashPowerLevel;
+		// Update flashlight range, light collider size and light collider position
+		if (flashPowerLevel > 75) {
+			spr.sprite = bate1;
+		
+		} else if (flashPowerLevel <= 75 && flashPowerLevel > 50) {
+
+			spr.sprite = bate2;
+
+		} else if (flashPowerLevel <= 50 && flashPowerLevel > 25) {
+
+			spr.sprite = bate3;
+		} else {
+
+			spr.sprite = bate4;
+		}
+			
+
 	}
 
 	public void AddEnemyToList (EnemyController script)
