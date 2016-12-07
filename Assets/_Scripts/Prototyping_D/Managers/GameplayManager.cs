@@ -27,14 +27,13 @@ public class GameplayManager : MonoBehaviour
 	private List<EnemyController> enemiesNext;
 	private bool enemiesMoving;
 
-	private Image BatteryLevel;
+	private Image batteryLevel;
 	public SpriteRenderer spr;
 	public float flashPowerLevel;
 	public Sprite bate1;
 	public Sprite bate2;
 	public Sprite bate3;
 	public Sprite bate4;
-
 
 
 	public int Level {
@@ -55,10 +54,10 @@ public class GameplayManager : MonoBehaviour
 		enemiesNext = new List<EnemyController> ();
 		boardScript = GetComponent<BoardCycleManager> ();
 
-		spr = GetComponent<SpriteRenderer>();
-		BatteryLevel = GetComponent<Image> ();
+	
+		GameObject battery = GameObject.Find ("batteryLevel");
+		batteryLevel = battery.GetComponent<Image> ();
 
-		spr = GameObject.Find("Batterylevel").GetComponent<SpriteRenderer>();
 
 		dialogObject = GameObject.Find ("NewDialog");
 		InitGame ();
@@ -150,21 +149,21 @@ public class GameplayManager : MonoBehaviour
 
 
 
-		float flashPowerLevel = player.GetComponent<HeroPlayerController> ().flashPowerLevel;
+		float flashPowerLevel = GameObject.Find("Hero").GetComponent<HeroPlayerController> ().flashPowerLevel;
 		// Update flashlight range, light collider size and light collider position
 		if (flashPowerLevel > 75) {
-			spr.sprite = bate1;
+			batteryLevel.sprite = bate1;
 		
 		} else if (flashPowerLevel <= 75 && flashPowerLevel > 50) {
 
-			spr.sprite = bate2;
+			batteryLevel.sprite = bate2;
 
 		} else if (flashPowerLevel <= 50 && flashPowerLevel > 25) {
 
-			spr.sprite = bate3;
+			batteryLevel.sprite = bate3;
 		} else {
 
-			spr.sprite = bate4;
+			batteryLevel.sprite = bate4;
 		}
 			
 
