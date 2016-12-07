@@ -10,7 +10,7 @@ public class hideAction : MonoBehaviour {
 	public BoxCollider2D coxColl;
 
 	public bool isOpen;
-
+	public bool playerVisible;
 	private bool isTouching;
 
 
@@ -22,6 +22,7 @@ public class hideAction : MonoBehaviour {
 		girl = GameObject.Find ("girl");
 
 		isTouching = false;
+		playerVisible = true;
 	}
 
 
@@ -29,20 +30,23 @@ public class hideAction : MonoBehaviour {
 	{
 		if (isTouching) {
 
-
-			if (Input.GetKeyDown (KeyCode.Space)) {
+		
+			if (Input.GetKeyDown (KeyCode.Space) && playerVisible) {
 				ItemOpen ();
+				playerVisible=false;
+			
 			} 
 
-
-
-			if (Input.GetKeyDown (KeyCode.RightArrow)) {
+		
+		else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible) {
 			animator.SetBool ("isOpen", false);
 			girl.SetActive (true);
+			playerVisible=true;
 			
 			}
 		}
 	}
+
 
 
 	void OnTriggerEnter2D(Collider2D other) {
