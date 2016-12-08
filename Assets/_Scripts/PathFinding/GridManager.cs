@@ -18,8 +18,8 @@ public class GridManager : MonoBehaviour
 	void Awake ()
 	{
 		nodeDiameter = nodeRadius * 2;
-		gridSizeX = Mathf.RoundToInt (gridWorldSize.x * nodeDiameter);
-		gridSizeY = Mathf.RoundToInt (gridWorldSize.y * nodeDiameter);
+		gridSizeX = Mathf.RoundToInt (gridWorldSize.x / nodeDiameter);
+		gridSizeY = Mathf.RoundToInt (gridWorldSize.y / nodeDiameter);
 		CreateGrid ();
 	}
 

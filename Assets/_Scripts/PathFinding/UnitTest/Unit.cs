@@ -9,14 +9,27 @@ public class Unit : MonoBehaviour
 	Vector3[] path;
 	int targetIndex;
 
+	private Vector3 targetV;
+	private Vector3 targetLastV;
+
 	void Start ()
 	{
 		PathRequestManager.RequestPath (transform.position, target.position, OnPathFound);
 	}
 
+	void Update ()
+	{
+		targetLastV = targetLastV != null ? targetV : target.position;
+		targetV = target.position;
+
+		if (!targetLastV.Equals (targetV)) {
+			PathRequestManager.RequestPath (transform.position, targetV, OnPathFound);
+		}
+	}
+
 	public void OnPathFound (Vector3[] newPath, bool pathSuccessful)
 	{
-		if (pathSuccessful) {
+		if (pathSuccessful && newPath.Length > 0) {
 			path = newPath;
 			StopCoroutine ("FollowPath");
 			StartCoroutine ("FollowPath");

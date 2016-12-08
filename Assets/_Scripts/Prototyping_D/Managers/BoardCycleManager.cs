@@ -494,6 +494,7 @@ public class BoardCycleManager : MonoBehaviour
 		case 1:
 			{
 				objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (0, 3, 3));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
