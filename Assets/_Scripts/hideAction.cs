@@ -28,21 +28,22 @@ public class hideAction : MonoBehaviour {
 	{
 		if (isTouching) {
 		
-			if (Input.GetKeyDown (KeyCode.Space) && playerVisible && !animator.GetBool("isOpen")) {
+			if (Input.GetKeyDown (KeyCode.Space) && playerVisible && !animator.GetBool("isOpen"))
+			{
 				ItemOpen ();
 				playerVisible=false;
 
 			} 
 				
-			else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible && !animator.GetBool("isOpen")) {
+			else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible && !animator.GetBool("isOpen"))
+			{
 				ItemOpen ();	
 				playerVisible=true;
 			
 			}
 		}
 	}
-
-
+		
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Player"){
@@ -56,7 +57,6 @@ public class hideAction : MonoBehaviour {
 	void OnTriggerExit2D(Collider2D other){
 		isTouching = false;
 
-		//animator.SetBool ("isOpen", false);
 	}
 
 
@@ -82,15 +82,6 @@ public class hideAction : MonoBehaviour {
 		//yield return new WaitForSecondsRealtime (1);
 		animator.SetBool ("isOpen", false);
 	}
-
-
-
-
-	//void ItemClosed(){
-	//	animator.SetBool ("isOpen", false);
-	//	GameObject.Find ("girl").SetActive (true);
-	
-	//}
 
 
 
