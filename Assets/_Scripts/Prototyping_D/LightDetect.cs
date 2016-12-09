@@ -108,10 +108,15 @@ public class LightDetect : MonoBehaviour
 			oRange = 5f;
 			lT.localScale = new Vector3 (1, 2, 1);
 			flashPos = 1.5f;
-		} else {
+		} else if (flashPowerLevel <= 25 && flashPowerLevel > 0) {
 			oRange = 2f;
 			lT.localScale = new Vector3 (1, 1, 1);
 			flashPos = 1.0f;
+		} else {
+			oRange = 0f;
+			lT.localScale = new Vector3 (1, 0, 1);
+			flashPos = 0f;
+		
 		}
 
 		if (hitInf.collider && hitInf.collider.tag != "Enemy" && distance < oRange) {
