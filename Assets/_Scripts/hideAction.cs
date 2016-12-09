@@ -3,7 +3,6 @@ using System.Collections;
 
 public class hideAction : MonoBehaviour {
 
-
 	public GameObject girl;
 	private Animator animator;
 	public Rigidbody2D myRigidbody;
@@ -20,7 +19,6 @@ public class hideAction : MonoBehaviour {
 		myRigidbody = GetComponent<Rigidbody2D>();
 		coxColl = GetComponent<BoxCollider2D> ();
 		girl = GameObject.Find ("girl");
-
 		isTouching = false;
 		playerVisible = true;
 	}
@@ -29,19 +27,16 @@ public class hideAction : MonoBehaviour {
 	void Update() 
 	{
 		if (isTouching) {
-
 		
-			if (Input.GetKeyDown (KeyCode.Space) && playerVisible) {
+			if (Input.GetKeyDown (KeyCode.Space) && playerVisible && !animator.GetBool("isOpen")) {
 				ItemOpen ();
 				playerVisible=false;
-			
-			} 
 
-		
-		else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible) {
-			animator.SetBool ("isOpen", false);
-			girl.SetActive (true);
-			playerVisible=true;
+			} 
+				
+			else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible && !animator.GetBool("isOpen")) {
+				ItemOpen ();	
+				playerVisible=true;
 			
 			}
 		}
@@ -54,8 +49,7 @@ public class hideAction : MonoBehaviour {
 			isTouching = true;
 
 		}
-
-
+			
 	}
 
 
@@ -67,10 +61,30 @@ public class hideAction : MonoBehaviour {
 
 
 	void ItemOpen(){
+
+		if (playerVisible) {
+
+			girl.SetActive (false);
+		
+		} else {
+			girl.SetActive (true);
+		
+		}
+
 		animator.SetBool ("isOpen", true);
-		girl.SetActive (false);
+		StartCoroutine(countTime ());
+
 	
 	}
+
+	private IEnumerator countTime(){
+		yield return new WaitForSeconds (1);
+		//yield return new WaitForSecondsRealtime (1);
+		animator.SetBool ("isOpen", false);
+	}
+
+
+
 
 	//void ItemClosed(){
 	//	animator.SetBool ("isOpen", false);
