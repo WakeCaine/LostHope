@@ -63,8 +63,8 @@ public class GridManager : MonoBehaviour
 
 	public Node NodeFromWorldPoint (Vector3 worldPosition)
 	{ 
-		float precentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
-		float precentY = (worldPosition.y + gridWorldSize.y / 2) / gridWorldSize.y;
+		float precentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x - transform.position.x;
+		float precentY = (worldPosition.y + gridWorldSize.y / 2) / gridWorldSize.y - transform.position.y;
 		precentX = Mathf.Clamp01 (precentX);
 		precentY = Mathf.Clamp01 (precentY);
 
