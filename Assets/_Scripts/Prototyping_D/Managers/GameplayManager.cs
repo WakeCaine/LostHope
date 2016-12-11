@@ -17,17 +17,26 @@ public class GameplayManager : MonoBehaviour
 	public bool changeBoard = false;
 	public string startingLevelMessage;
 
+	public bool doingSetup = true;
+
 	private Text levelText;
 	private Text dialogText;
 	private string nextdialogText;
+	private HeroPlayerController player;
 	private GameObject levelImage;
-	GameObject dialogObject;
-	public bool doingSetup = true;
+	private GameObject dialogObject;
 	private int level = 1;
 	private List<EnemyController> enemies;
 	private List<EnemyController> enemiesNext;
 	private bool enemiesMoving;
 	private bool firstDialog = false;
+
+	Animator anim;
+	public bool batterylow;
+	private Image batteryLevel;
+	public SpriteRenderer spr;
+	public float flashPowerLevel;
+	public Sprite[] batterySprites;
 
 	public int Level {
 		get { return level; }
@@ -47,6 +56,13 @@ public class GameplayManager : MonoBehaviour
 		enemies = new List<EnemyController> ();
 		enemiesNext = new List<EnemyController> ();
 		boardScript = GetComponent<BoardCycleManager> ();
+
+	
+		GameObject battery = GameObject.Find ("Battery");
+		batteryLevel = battery.GetComponent<Image> ();
+		anim = battery.GetComponent<Animator> ();
+
+
 		dialogObject = GameObject.Find ("NewDialog");
 		InitGame ();
 	}
@@ -70,16 +86,20 @@ public class GameplayManager : MonoBehaviour
 	void InitGame ()
 	{
 		doingSetup = true;
+
 		levelImage = GameObject.Find ("LevelImage");
 		levelText = levelImage.GetComponentInChildren<Text> ();
 		dialogText = GameObject.Find ("DialogText").GetComponent<Text> ();
+		player = GameObject.FindGameObjectWithTag ("Player").GetComponent<HeroPlayerController> ();
+
 		levelText.text = "";
 		startingLevelMessage = "Where am i? Mom? Where are you...";
 		dialogText.text = "Press F to turn on the flashlight. The more you use it. The more power is drained.\n Press P for more tips.";
+
 		levelImage.SetActive (true);
 		StartCoroutine (TypeText ());
 
-		enemies.Clear ();
+		//Create two boards
 		boardScript.SetupScene (level, generateNextBoard);
 		level += 1;
 		generateNextBoard = true;
@@ -158,6 +178,44 @@ public class GameplayManager : MonoBehaviour
 		}
 		//StartCoroutine (MoveEnemies ());
 	}
+
+	void FixedUpdate ()
+	{
+		if (player.pickedFlashlight)
+			BatteryLevelChanger ();
+	}
+
+	void BatteryLevelChanger ()
+	{
+		float flashPowerLevel = player.flashPowerLevel;
+		// Update flashlight range, light collider size and light collider position
+		if (flashPowerLevel > 75) {
+
+			anim.enabled = false;
+			batteryLevel.sprite = batterySprites [0];
+
+		} else if (flashPowerLevel <= 75 && flashPowerLevel > 50) {
+
+			anim.enabled = false;
+			batteryLevel.sprite = batterySprites [1];
+
+		} else if (flashPowerLevel <= 50 && flashPowerLevel > 25) {
+
+			anim.enabled = false;
+			batteryLevel.sprite = batterySprites [2];
+
+		} else if (flashPowerLevel <= 25 && flashPowerLevel > 0) {
+
+			anim.enabled = true;
+			anim.SetBool ("batterylow", true);
+
+		} else {
+
+			anim.enabled = false;
+			batteryLevel.sprite = batterySprites [3];
+		}
+	}
+
 
 	public void AddEnemyToList (EnemyController script)
 	{

@@ -30,7 +30,7 @@ public class HeroPlayerController : MovingObject
 	private bool flashLight = false;
 
 	private float dir = 1;
-	private bool pickedFlashlight = false;
+	public bool pickedFlashlight = false;
 
 	GameObject batteryImage;
 	private Grid_Manager gridManager;
