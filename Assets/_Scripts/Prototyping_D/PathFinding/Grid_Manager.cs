@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GridManager : MonoBehaviour
+public class Grid_Manager : MonoBehaviour
 {
 	public bool displayGridGizmos;
 	public Transform player;
@@ -13,14 +13,13 @@ public class GridManager : MonoBehaviour
 	float nodeDiameter;
 	int gridSizeX, gridSizeY;
 
-	Node[,] grid;
+	_Node[,] grid;
 
 	void Awake ()
 	{
 		nodeDiameter = nodeRadius * 2;
 		gridSizeX = Mathf.RoundToInt (gridWorldSize.x / nodeDiameter);
 		gridSizeY = Mathf.RoundToInt (gridWorldSize.y / nodeDiameter);
-		CreateGrid ();
 	}
 
 	public int MaxSize {
@@ -31,7 +30,7 @@ public class GridManager : MonoBehaviour
 
 	public void CreateGrid ()
 	{
-		grid = new Node[gridSizeX, gridSizeY];
+		grid = new _Node[gridSizeX, gridSizeY];
 		Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.up * gridWorldSize.y / 2;
 
 		for (int x = 0; x < gridSizeX; x++) {
@@ -44,14 +43,14 @@ public class GridManager : MonoBehaviour
 					isPlayer = what.CompareTag ("Enemy") ? true : isPlayer;
 				}
 				bool walkable = isPlayer ? true : !(Physics.CheckSphere (worldPoint, nodeRadius, unwalkableMask));
-				grid [x, y] = new Node (walkable, worldPoint, x, y);
+				grid [x, y] = new _Node (walkable, worldPoint, x, y);
 			}
 		}
 	}
 
-	public List<Node> GetNeighbours (Node node)
+	public List<_Node> GetNeighbours (_Node node)
 	{
-		List<Node> neighbours = new List<Node> ();
+		List<_Node> neighbours = new List<_Node> ();
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++) {
 				if (x == 0 && y == 0)
@@ -67,7 +66,7 @@ public class GridManager : MonoBehaviour
 		return neighbours;
 	}
 
-	public Node NodeFromWorldPoint (Vector3 worldPosition)
+	public _Node NodeFromWorldPoint (Vector3 worldPosition)
 	{ 
 		float precentX = ((worldPosition.x + gridWorldSize.x / 2) - transform.position.x) / gridWorldSize.x;
 		float precentY = ((worldPosition.y + gridWorldSize.y / 2) - transform.position.y) / gridWorldSize.y;
@@ -79,14 +78,14 @@ public class GridManager : MonoBehaviour
 		return grid [x, y];
 	}
 
-	public List<Node> path;
+	public List<_Node> path;
 
 	void OnDrawGizmos ()
 	{
 		Gizmos.DrawWireCube (transform.position, new Vector3 (gridWorldSize.x, gridWorldSize.y, 1));
 		if (grid != null && displayGridGizmos) {
-			Node playerNode = NodeFromWorldPoint (player.position);
-			foreach (Node n in grid) {
+			_Node playerNode = NodeFromWorldPoint (player.position);
+			foreach (_Node n in grid) {
 				Gizmos.color = (n.walkable) ? Color.white : Color.red;
 				if (playerNode == n) {
 					Gizmos.color = Color.cyan;

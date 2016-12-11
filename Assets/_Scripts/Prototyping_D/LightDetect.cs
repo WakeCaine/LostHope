@@ -79,7 +79,7 @@ public class LightDetect : MonoBehaviour
 			lT.rotation = Quaternion.Euler (0, 0, 0);
 			fLight.rotation = Quaternion.Euler (60, 0, 0);
 		} else if (dir == 4) {
-			hit = Physics.Linecast (transform.position, new Vector2 (playerPosition.x, playerPosition.y + 10), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
+			hit = Physics.Linecast (playerPosition, new Vector2 (playerPosition.x, playerPosition.y + 10), out hitInf, 1 << LayerMask.NameToLayer ("BlockingLayer"));
 
 			if (hitInf.collider) {
 				distance = hitInf.collider.transform.position.y - playerPosition.y;

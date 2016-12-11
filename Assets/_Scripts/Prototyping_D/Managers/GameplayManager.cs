@@ -19,6 +19,7 @@ public class GameplayManager : MonoBehaviour
 
 	private Text levelText;
 	private Text dialogText;
+	private string nextdialogText;
 	private GameObject levelImage;
 	GameObject dialogObject;
 	public bool doingSetup = true;
@@ -26,6 +27,7 @@ public class GameplayManager : MonoBehaviour
 	private List<EnemyController> enemies;
 	private List<EnemyController> enemiesNext;
 	private bool enemiesMoving;
+	private bool firstDialog = false;
 
 	public int Level {
 		get { return level; }
@@ -34,6 +36,7 @@ public class GameplayManager : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
 	{
+		doingSetup = true;
 		if (instance == null) {
 			instance = this;
 		} else if (instance != this) {
@@ -100,6 +103,7 @@ public class GameplayManager : MonoBehaviour
 		levelImage.SetActive (false);
 		dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
 		doingSetup = true;
+		firstDialog = true;
 	}
 
 	public void GameOver ()
@@ -127,31 +131,32 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			Application.Quit ();
-		} else if (Input.GetKeyDown (KeyCode.P)) {
+		} else if (Input.GetKeyDown (KeyCode.P) && firstDialog) {
 			if (doingSetup) {
 				doingSetup = false;
 				int tips = Random.Range (0, 5);
 				if (tips == 0) {
-					dialogText.text = "Press F to turn on the flashlight. The more you use it. The more power is drained.";
+					nextdialogText = "Press F to turn on the flashlight. The more you use it. The more power is drained.";
 				} else if (tips == 1) {
-					dialogText.text = "Press Esc to exit the game.";
+					nextdialogText = "Press Esc to exit the game.";
 				} else if (tips == 2) {
-					dialogText.text = "No more tips, silly!";
+					nextdialogText = "No more tips, silly!";
 				} else if (tips == 3) {
-					dialogText.text = "NPCs don't exist yet. Sorry.";
+					nextdialogText = "NPCs don't exist yet. Sorry.";
 				} else if (tips == 4) {
-					dialogText.text = "Level templates are in construction. Puzzles, enemies and even more fun...";
+					nextdialogText = "Level templates are in construction. Puzzles, enemies and even more fun...";
 				}
-				dialogText.text += " \nPress P for more tips."; 
+				nextdialogText += " \nPress P for more tips."; 
 			} else if (!doingSetup) {
 				doingSetup = true;
 			}
+			dialogText.text = doingSetup ? nextdialogText : dialogText.text;
 			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
 		}
 		if (doingSetup) {
 			return;
 		}
-		StartCoroutine (MoveEnemies ());
+		//StartCoroutine (MoveEnemies ());
 	}
 
 	public void AddEnemyToList (EnemyController script)

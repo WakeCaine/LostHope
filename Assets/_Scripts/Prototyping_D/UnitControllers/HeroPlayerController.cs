@@ -33,6 +33,7 @@ public class HeroPlayerController : MovingObject
 	private bool pickedFlashlight = false;
 
 	GameObject batteryImage;
+	private Grid_Manager gridManager;
 
 	// Use this for initialization
 
@@ -45,6 +46,7 @@ public class HeroPlayerController : MovingObject
 	{
 		//animator = GetComponent<Animator> ();
 		gameManager = GameObject.FindObjectOfType<GameplayManager> ();
+		gridManager = GameObject.Find ("A_").GetComponent<Grid_Manager> ();
 		sprite = GetComponent<SpriteRenderer> ();
 		animator = this.GetComponent<Animator> ();
 		food = GameplayManager.instance.playerFoodPoints;
@@ -128,8 +130,9 @@ public class HeroPlayerController : MovingObject
 		} else if (y < (int)(rows / 2) + 1.5 && y > (int)(rows / 2) - 1.5 && x < 1) {
 			this.transform.position = new Vector3 (columns - 1, (int)(rows / 2), 0);
 		} 
-
+			
 		enabled = true;
+		gridManager.CreateGrid ();
 	}
 
 	public void LooseFood (int loss)

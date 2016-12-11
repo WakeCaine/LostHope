@@ -69,12 +69,14 @@ public class BoardCycleManager : MonoBehaviour
 	private int lastGeneratedLevel;
 	private Vector3 lastPlayerPosition;
 	private Light roomLight;
+	private Grid_Manager gridManager;
 
 	void Awake ()
 	{
 		RandomizeTemplates ();
 		nextLevelYPlacement = columns + 1;
 		roomLight = GameObject.FindGameObjectWithTag ("Light").GetComponent<Light> ();
+		gridManager = GameObject.Find ("A_").GetComponent<Grid_Manager> ();
 	}
 
 	void Update ()
@@ -253,6 +255,9 @@ public class BoardCycleManager : MonoBehaviour
 			itemHolder1.transform.position = newPosition;
 			nextBoard = false;
 		}
+
+
+		gridManager.CreateGrid ();
 	}
 
 	public void GenerateMapObjects (bool random)
@@ -377,7 +382,6 @@ public class BoardCycleManager : MonoBehaviour
 
 		GameplayManager.instance.SwitchEnemyLists ();
 		SetupScene (level, true);
-
 		GameplayManager.instance.DoingSetup (false);
 	}
 
