@@ -507,11 +507,6 @@ public class BoardCycleManager : MonoBehaviour
 				objectAndPositon.Push (LayoutObjectAtPosition (5, 4, 2));
 				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 3));
 				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 1));
-				//objectAndPositon.Push (LayoutObjectAtPosition (0, 3, 3));
-				//objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
-				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
-				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
-				//objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
 				break;
 			}
 		case 2:
@@ -553,9 +548,9 @@ public class BoardCycleManager : MonoBehaviour
 
 	public void RandomizeTemplates ()
 	{
-		//TODO Make actual templates HERE ~Darius
+		//TODO
 		//Template pseudo randomization here
-		//This one is here, because i need to fix something
+		//Additional
 		stackOfTemplates.Push (GenerateTemplate (0));
 		currentLevelTemplate++;
 		//----------------------------------
@@ -575,12 +570,6 @@ public class BoardCycleManager : MonoBehaviour
 		currentLevelTemplate++;
 		stackOfTemplates.Push (GenerateTemplate (0));
 		currentLevelTemplate++;
-		//Next can be randomized
-		/*int randNum = Random.Range (0, countTemplates - 1);
-		stackOfTemplates.Push (GenerateTemplate (randNum));
-		stackOfTemplates.Push (GenerateTemplate (randNum));
-		stackOfTemplates.Push (GenerateTemplate (randNum));
-		*/
 		//...
 
 	}
