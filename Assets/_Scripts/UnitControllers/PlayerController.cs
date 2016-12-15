@@ -127,7 +127,7 @@ public class PlayerController : MovingObject
 		} else if (other.tag == "Food") {
 			food += pointsPerFood;
 			foodText.text = "+" + pointsPerFood + " Food: " + food;
-			SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
+			//SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
 			// Temp battery
@@ -166,7 +166,7 @@ public class PlayerController : MovingObject
 		RaycastHit hit;
 		bool canMove = Move (xDir, yDir, out hit);
 		if (canMove) {
-			SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+			//SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
 		}
 
 		CheckIfGameOver ();
@@ -178,7 +178,7 @@ public class PlayerController : MovingObject
 	{
 		if (food <= 0) {
 			SoundManager.instance.musicSource.Stop ();
-			SoundManager.instance.RandomizeSfx (gameOverSound);
+			//SoundManager.instance.RandomizeSfx (gameOverSound);
 			GameManager.instance.GameOver ();
 		}
 	}

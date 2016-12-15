@@ -20,7 +20,7 @@ public class Wall : MonoBehaviour
 	{
 		spriteRenderer.sprite = dmgSprite;
 		hp -= loss;
-		SoundManager.instance.RandomizeSfx (chopSound1, chopSound2);
+		//SoundManager.instance.RandomizeSfx (chopSound1, chopSound2);
 		if (hp <= 0) {
 			gameObject.SetActive (false);
 		}

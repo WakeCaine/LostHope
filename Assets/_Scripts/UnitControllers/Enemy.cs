@@ -20,7 +20,7 @@ public class Enemy : MovingObject
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 
 		// Enemies start out as invisible
-		GetComponent<SpriteRenderer>().enabled = false;
+		GetComponent<SpriteRenderer> ().enabled = false;
 		// End
 
 		base.Start ();
@@ -53,7 +53,7 @@ public class Enemy : MovingObject
 	{
 		PlayerController hitPlayer = component as PlayerController;
 		animator.SetTrigger ("enemyAttack");
-		SoundManager.instance.RandomizeSfx (enemyAttack1, enemyAttack2);
+		//SoundManager.instance.RandomizeSfx (enemyAttack1, enemyAttack2);
 		//hitPlayer.LooseFood (playerDamage);
 	}
 
@@ -69,13 +69,15 @@ public class Enemy : MovingObject
 		//skipMove = true;
 	}
 
-	private void OnTriggerEnter (Collider other){
+	private void OnTriggerEnter (Collider other)
+	{
 		if (other.tag == "Light_Trigger") {
 			visible = true;
 		}
 	}
 
-	void FixedUpdate() {
+	void FixedUpdate ()
+	{
 		if (visible) {
 			GetComponent<SpriteRenderer> ().enabled = true;
 		} else if (!visible) {

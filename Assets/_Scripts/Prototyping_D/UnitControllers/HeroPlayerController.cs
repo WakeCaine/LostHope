@@ -18,6 +18,7 @@ public class HeroPlayerController : MovingObject
 	public AudioClip drinkSound1;
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
+	public AudioClip door;
 
 	public bool canMove = true;
 
@@ -34,6 +35,8 @@ public class HeroPlayerController : MovingObject
 
 	GameObject batteryImage;
 	private Grid_Manager gridManager;
+
+	bool gameOverTrigger = false;
 
 	// Use this for initialization
 
@@ -135,20 +138,13 @@ public class HeroPlayerController : MovingObject
 		gridManager.CreateGrid ();
 	}
 
-	public void LooseFood (int loss)
-	{
-		//animator.SetTrigger ("playerHit");
-		//food -= loss;
-		//foodText.text = "-" + loss + " Food: " + food;
-		CheckIfGameOver ();
-	}
-
 	private void OnTriggerEnter (Collider other)
 	{
 		Debug.LogWarning ("Hue hue");
 		if (other.tag == "Exit") {
 			enabled = false;
 			other.gameObject.GetComponent<Animator> ().SetBool ("isOpen", true);
+			SoundManager.instance.RandomizeSfx (0.2f, 0, false, true, door);
 			Invoke ("Restart", restartLevelDelay);
 		} else if (other.tag == "Food") {
 			// Temp battery
@@ -157,7 +153,7 @@ public class HeroPlayerController : MovingObject
 			if (flashPowerLevel > 100f) {
 				flashPowerLevel = 100f;
 			}
-			SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
+			//SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
 			// Temp battery
@@ -166,17 +162,17 @@ public class HeroPlayerController : MovingObject
 			if (flashPowerLevel > 100f) {
 				flashPowerLevel = 100f;
 			}
-			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
+			//SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Flashlight") {
 			// Temp battery
 			pickedFlashlight = true;
 			batteryImage.SetActive (true);
-			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
+			//SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "NPC") {
 			//other.gameObject.transform.position = Vector3.MoveTowards (other.transform.position, new Vector3 (other.transform.position.x + 1, other.transform.position.y, other.transform.position.z), 1f);
-		}
+		} 
 	}
 
 	protected override bool AttemptMove<T> (float xDir, float yDir)
@@ -205,20 +201,24 @@ public class HeroPlayerController : MovingObject
 		RaycastHit hit;
 		bool canMove = Move (xDir, yDir, out hit);
 		if (canMove) {
-			SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+			SoundManager.instance.RandomizeSfx (0.25f, 1.25f, true, moveSound1, moveSound2);
 		}
 
-		CheckIfGameOver ();
 		return canMove;
 	}
 
-	private void CheckIfGameOver ()
+	public void PlayerDead ()
 	{
-		if (food <= 0) {
-			SoundManager.instance.musicSource.Stop ();
-			SoundManager.instance.RandomizeSfx (gameOverSound);
-			GameplayManager.instance.GameOver ();
-		}
+		gameManager.doingSetup = true;
+		gameManager.levelImage.SetActive (true);
+		gameOverTrigger = true;
+		SoundManager.instance.RandomizeSfx (0.5f, 1.85f, false, false, gameOverSound);
+		Invoke ("GameOver", restartLevelDelay);
+	}
+
+	private void GameOver ()
+	{
+		
 	}
 
 	public float GetDirection ()

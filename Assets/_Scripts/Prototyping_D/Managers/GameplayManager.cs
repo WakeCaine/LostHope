@@ -23,7 +23,7 @@ public class GameplayManager : MonoBehaviour
 	private Text dialogText;
 	private string nextdialogText;
 	private HeroPlayerController player;
-	private GameObject levelImage;
+	public GameObject levelImage;
 	private GameObject dialogObject;
 	private int level = 1;
 	private List<EnemyController> enemies;
@@ -116,6 +116,18 @@ public class GameplayManager : MonoBehaviour
 			yield return new WaitForSeconds (letterPause);
 		}
 		Invoke ("HideLevelImage", levelStartDelay);
+	}
+
+	IEnumerator TypeEndingText ()
+	{
+		foreach (char letter in startingLevelMessage.ToCharArray()) {
+			levelText.text += letter;
+			//if (typeSound1 && typeSound2)
+			//SoundManager.instance.RandomizeSfx (typeSound1, typeSound2);
+			yield return 0;
+			yield return new WaitForSeconds (letterPause);
+		}
+
 	}
 
 	private void HideLevelImage ()
@@ -237,5 +249,11 @@ public class GameplayManager : MonoBehaviour
 	public void DoingSetup (bool value)
 	{
 		doingSetup = value;
+	}
+
+	public void GameOverScreen ()
+	{
+		levelImage.SetActive (true);
+		GameObject.Find ("Canvas").GetComponent<Animator> ().SetTrigger ("GameOver");
 	}
 }

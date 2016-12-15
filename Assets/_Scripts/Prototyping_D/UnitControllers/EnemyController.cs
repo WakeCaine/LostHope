@@ -17,6 +17,10 @@ public class EnemyController : MovingObject
 		animator = GetComponent<Animator> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 
+		// Enemies start out as invisible
+		GetComponent<SpriteRenderer> ().enabled = false;
+		// End
+
 		base.Start ();
 	}
 
@@ -59,8 +63,7 @@ public class EnemyController : MovingObject
 	{
 		HeroPlayerController hitPlayer = component as HeroPlayerController;
 		animator.SetTrigger ("enemyAttack");
-		SoundManager.instance.RandomizeSfx (enemyAttack1, enemyAttack2);
-		hitPlayer.LooseFood (playerDamage);
+		//SoundManager.instance.RandomizeSfx (enemyAttack1, enemyAttack2);
 	}
 
 	protected override bool AttemptMove<T> (float xDir, float yDir)

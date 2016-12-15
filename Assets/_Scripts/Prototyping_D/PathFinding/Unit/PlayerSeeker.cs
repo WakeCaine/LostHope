@@ -13,16 +13,24 @@ public class PlayerSeeker : MonoBehaviour
 	private Vector3 targetLastV;
 	private bool following = false;
 	private Grid_Manager gridManager;
+	private bool visible = false;
+
+	private HeroPlayerController hero;
 
 	void Awake ()
 	{
 		gridManager = GameObject.Find ("A_").GetComponent<Grid_Manager> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
+
+		// Enemies start out as invisible
+		GetComponent<SpriteRenderer> ().enabled = false;
+		// End
 	}
 
 	void Start ()
 	{
 		//PathRequest_Manager.RequestPath (transform.position, target.position, OnPathFound);
+		hero = GameObject.FindGameObjectWithTag ("Player").GetComponent<HeroPlayerController> ();
 	}
 
 	void Update ()
@@ -34,6 +42,16 @@ public class PlayerSeeker : MonoBehaviour
 			following = true;
 			PathRequest_Manager.RequestPath (transform.position, targetV, OnPathFound);
 		}*/
+	}
+
+	void FixedUpdate ()
+	{
+		if (visible) {
+			GetComponent<SpriteRenderer> ().enabled = true;
+		} else if (!visible) {
+			GetComponent<SpriteRenderer> ().enabled = false;
+		}
+		visible = false;
 	}
 
 	public void OnPathFound (Vector3[] newPath, bool pathSuccessful)
@@ -90,16 +108,29 @@ public class PlayerSeeker : MonoBehaviour
 	{
 		if (other.tag == "Hero_Ambient") {
 			if (!following && !targetLastV.Equals (targetV)) {
+				visible = true;
 				targetLastV = targetV;
 				following = true;
 				PathRequest_Manager.RequestPath (transform.position, targetV, OnPathFound);
 			}
 		} else if (other.tag == "Light_Trigger") {
 			if (!following && !targetLastV.Equals (targetV)) {
+				visible = true;
 				targetLastV = targetV;
 				following = true;
 				PathRequest_Manager.RequestPath (transform.position, targetV, OnPathFound);
 			}
+		} else if (other.tag == "PlayerBody") {
+			hero.PlayerDead ();
+		}
+	}
+
+	private void OnTriggerStay (Collider other)
+	{
+		if (other.tag == "Hero_Ambient") {
+			visible = true;
+		} else if (other.tag == "Light_Trigger") {
+			visible = true;
 		}
 	}
 }
