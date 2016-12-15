@@ -1,52 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class hideAction : MonoBehaviour {
+public class hideAction : MonoBehaviour
+{
 
 	public GameObject girl;
 	private Animator animator;
-	public Rigidbody2D myRigidbody;
-	public BoxCollider2D coxColl;
+	public BoxCollider coxColl;
 
 	public bool isOpen;
 	public bool playerVisible;
 	private bool isTouching;
 
 
-	void Start (){
+	void Start ()
+	{
 
 		animator = GetComponent<Animator> ();
-		myRigidbody = GetComponent<Rigidbody2D>();
-		coxColl = GetComponent<BoxCollider2D> ();
-		girl = GameObject.Find ("girl");
+		coxColl = GetComponent<BoxCollider> ();
+		girl = GameObject.FindGameObjectWithTag ("Player");
 		isTouching = false;
 		playerVisible = true;
 	}
 
 
-	void Update() 
+	void Update ()
 	{
 		if (isTouching) {
 		
-			if (Input.GetKeyDown (KeyCode.Space) && playerVisible && !animator.GetBool("isOpen"))
-			{
+			if (Input.GetKeyDown (KeyCode.Space) && playerVisible && !animator.GetBool ("isOpen")) {
+				SoundManager.instance.RandomizeSfx (0.2f, 0, false, true, girl.GetComponent<HeroPlayerController> ().door);
 				ItemOpen ();
-				playerVisible=false;
+				playerVisible = false;
 
-			} 
-				
-			else if(Input.GetKeyDown (KeyCode.Space) && !playerVisible && !animator.GetBool("isOpen"))
-			{
+			} else if (Input.GetKeyDown (KeyCode.Space) && !playerVisible && !animator.GetBool ("isOpen")) {
+				SoundManager.instance.RandomizeSfx (0.2f, 0, false, true, girl.GetComponent<HeroPlayerController> ().door);
 				ItemOpen ();	
-				playerVisible=true;
+				playerVisible = true;
 			
 			}
 		}
 	}
-		
 
-	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.tag == "Player"){
+
+	void OnTriggerEnter (Collider other)
+	{
+		if (other.gameObject.tag == "Player") {
 			isTouching = true;
 
 		}
@@ -54,13 +53,15 @@ public class hideAction : MonoBehaviour {
 	}
 
 
-	void OnTriggerExit2D(Collider2D other){
+	void OnTriggerExit (Collider other)
+	{
 		isTouching = false;
 
 	}
 
 
-	void ItemOpen(){
+	void ItemOpen ()
+	{
 
 		if (playerVisible) {
 
@@ -72,17 +73,15 @@ public class hideAction : MonoBehaviour {
 		}
 
 		animator.SetBool ("isOpen", true);
-		StartCoroutine(countTime ());
+		StartCoroutine (countTime ());
 
 	
 	}
 
-	private IEnumerator countTime(){
+	private IEnumerator countTime ()
+	{
 		yield return new WaitForSeconds (1);
 		//yield return new WaitForSecondsRealtime (1);
 		animator.SetBool ("isOpen", false);
 	}
-
-
-
 }

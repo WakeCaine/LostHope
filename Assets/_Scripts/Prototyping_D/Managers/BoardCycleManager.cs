@@ -51,22 +51,29 @@ public class BoardCycleManager : MonoBehaviour
 
 	public GameObject[] floorTiles;
 	public GameObject[] wallTiles;
+	public GameObject[] bedroomTiles;
 	public GameObject[] foodTiles;
 	public GameObject[] enemyTiles;
 	public GameObject[] outerWallTiles;
+	public GameObject[] interactableTiles;
+	public GameObject[] pushableTiles;
+	public GameObject[] npcTiles;
 	public GameObject flashLight;
 	public GameObject teddy;
 
 	public bool nextBoard = false;
 	public bool randomGeneration = false;
-	public int currentLevelTemplate = 1;
+	public int currentLevelTemplate = 0;
+	public int lastGeneratedLevel;
+
+	public int levell = 1;
 
 	private Transform boardHolder, boardHolder1;
 	private Transform itemHolder, itemHolder1;
 	private List<Vector3> gridPositions = new List<Vector3> ();
 	private List<Vector3> gridPositions1 = new List<Vector3> ();
-	private Stack<MapTemplate> stackOfTemplates = new Stack<MapTemplate> ();
-	private int lastGeneratedLevel;
+	public Stack<MapTemplate> stackOfTemplates = new Stack<MapTemplate> ();
+
 	private Vector3 lastPlayerPosition;
 	private Light roomLight;
 	private Grid_Manager gridManager;
@@ -275,7 +282,7 @@ public class BoardCycleManager : MonoBehaviour
 
 	public void SwitchLevel (int level, Vector3 lastPosition)
 	{
-		
+		levell += 1;
 		GameplayManager.instance.DoingSetup (true);
 
 		lastPlayerPosition = lastPosition;
@@ -485,24 +492,59 @@ public class BoardCycleManager : MonoBehaviour
 		Stack<int[]> objectAndPositon = new Stack<int[]> ();
 
 		//TODO change to JSON
-		//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject, 5- pickup
+		//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject, 5- flashlight, 6- teddy, 7- bed, 8- pickup tiles
 		switch (templateNumber) {
 		case 0:
 			{
 				//objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 1));
-				objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 3));
-				objectAndPositon.Push (LayoutObjectAtPosition (5, 4, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (7, 1, 3));
+				//objectAndPositon.Push (LayoutObjectAtPosition (5, 4, 3));
 				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 4));
 				break;
 			}
 		case 1:
 			{
-				objectAndPositon.Push (LayoutObjectAtPosition (5, 1, 3));
-				objectAndPositon.Push (LayoutObjectAtPosition (0, 3, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (5, 4, 2));
+				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (6, 4, 1));
+				//objectAndPositon.Push (LayoutObjectAtPosition (0, 3, 3));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 1));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 2, 3));
 				//objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 2));
+				break;
+			}
+		case 2:
+			{
+				objectAndPositon.Push (LayoutObjectAtPosition (8, 4, 2));
+				objectAndPositon.Push (LayoutObjectAtPosition (4, 4, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (4, 4, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (4, 3, 2));
+				objectAndPositon.Push (LayoutObjectAtPosition (4, 5, 2));
+				break;
+			}
+		case 3:
+			{
+				objectAndPositon.Push (LayoutObjectAtPosition (0, 7, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 5, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 1, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 3, 3));
+				objectAndPositon.Push (LayoutObjectAtPosition (2, 5, 3));
+				break;
+			}
+
+		case 4:
+			{
+				objectAndPositon.Push (LayoutObjectAtPosition (1, 4, 2));
+				break;
+			}
+
+		case 5:
+			{
+				objectAndPositon.Push (LayoutObjectAtPosition (3, 1, 1));
+				objectAndPositon.Push (LayoutObjectAtPosition (3, 5, 5));
 				break;
 			}
 		}
@@ -513,8 +555,17 @@ public class BoardCycleManager : MonoBehaviour
 	{
 		//TODO Make actual templates HERE ~Darius
 		//Template pseudo randomization here
-		//First two are tutorial
-		stackOfTemplates.Push (GenerateTemplate (1));
+		//This one is here, because i need to fix something
+		stackOfTemplates.Push (GenerateTemplate (0));
+		currentLevelTemplate++;
+		//----------------------------------
+		stackOfTemplates.Push (GenerateTemplate (5));
+		currentLevelTemplate++;
+		stackOfTemplates.Push (GenerateTemplate (4));
+		currentLevelTemplate++;
+		stackOfTemplates.Push (GenerateTemplate (3));
+		currentLevelTemplate++;
+		stackOfTemplates.Push (GenerateTemplate (2));
 		currentLevelTemplate++;
 		stackOfTemplates.Push (GenerateTemplate (1));
 		currentLevelTemplate++;
@@ -534,8 +585,8 @@ public class BoardCycleManager : MonoBehaviour
 	int[] LayoutObjectAtPosition (int chosenObject, int x, int y)
 	{
 		//TODO rethink this logic ~Darius
-		//I think i need to change logic of gridPositions. That is fucked.
-		int chosenElement = (x > 1 ? (x - 1) * rows : x - 1) + y - 1;
+		//I think i need to change logic of gridPositions.
+		int chosenElement = (x > 1) ? (((x - 1) * (rows - 2)) + y - 1) : y - 1;
 		int[] arrayOfObjects = new int[] { chosenElement, chosenObject };
 		return arrayOfObjects;
 	}
@@ -560,16 +611,24 @@ public class BoardCycleManager : MonoBehaviour
 		while (temp.objectAndPosition.Count > 0) {
 			int[] arr = temp.objectAndPosition.Pop ();
 			Vector3 randomPosition = (nextBoard ? gridPositions1 : gridPositions) [arr [0]];
-
+			//TODO change to JSON
+			//Example 0 - enemy, 1- npc, 2- wall, 3- hideObject, 4- pushableObject, 5- flashlight, 6- teddy, 7- bed, 8- pickup tiles
 			GameObject[] tileArray = new GameObject[0];
 			switch (arr [1]) {
 			case 0:
 				tileArray = enemyTiles;
 				break;
 			case 1:
+				tileArray = npcTiles;
 				break;
 			case 2:
 				tileArray = wallTiles;
+				break;
+			case 3:
+				tileArray = interactableTiles;
+				break;
+			case 4:
+				tileArray = pushableTiles;
 				break;
 			case 5:
 				tileArray = new GameObject[] { flashLight };
@@ -577,7 +636,14 @@ public class BoardCycleManager : MonoBehaviour
 			case 6:
 				tileArray = new GameObject[] { teddy };
 				break;
+			case 7:
+				tileArray = new GameObject[] { bedroomTiles [0] };
+				break;
+			case 8:
+				tileArray = foodTiles;
+				break;
 			}
+
 			GameObject tileChoice = tileArray [Random.Range (0, tileArray.Length)];
 
 			GameObject instance = Instantiate (tileChoice, randomPosition, Quaternion.identity) as GameObject;
@@ -590,7 +656,7 @@ public class BoardCycleManager : MonoBehaviour
 	}
 
 	//Represent template
-	struct MapTemplate
+	public struct MapTemplate
 	{
 		public int number;
 		public Stack<int[]> objectAndPosition;

@@ -25,7 +25,9 @@ public class BoardManager : MonoBehaviour
 	public GameObject exit;
 
 	public GameObject[] floorTiles;
+	public GameObject[] bedRoomTiles;
 	public GameObject[] wallTiles;
+	public GameObject[] interactTiles;
 	public GameObject[] foodTiles;
 	public GameObject[] enemyTiles;
 	public GameObject[] outerWallTiles;

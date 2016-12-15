@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class GameplayManager : MonoBehaviour
 	private List<EnemyController> enemiesNext;
 	private bool enemiesMoving;
 	private bool firstDialog = false;
+	private bool isPlayerDead = false;
+	private bool enemyAppear = true;
 
 	Animator anim;
 	public bool batterylow;
@@ -51,7 +54,6 @@ public class GameplayManager : MonoBehaviour
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-		DontDestroyOnLoad (gameObject);
 		LevelLoadCalled = false;
 		enemies = new List<EnemyController> ();
 		enemiesNext = new List<EnemyController> ();
@@ -65,6 +67,31 @@ public class GameplayManager : MonoBehaviour
 
 		dialogObject = GameObject.Find ("NewDialog");
 		InitGame ();
+	}
+
+	void FixedUpdate ()
+	{
+		if (isPlayerDead) {
+			if (Input.anyKey || Input.anyKeyDown) {
+				ReturnToMenu ();
+			}
+		}
+
+		if (boardScript.levell == 2) {
+			boardScript.levell += 3;
+			dialogText.text = "It is pretty dark in here. I think there should be a flashlight somewhere.";
+			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
+			doingSetup = true;
+		}
+
+		if (enemies.Count > 0 && enemyAppear) {
+			enemyAppear = false;
+			dialogText.text = "I feel there is something hiding in the shadows. QUICK, we need to find an EXIT!";
+			dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
+			doingSetup = true;
+		}
+
+		BatteryLevelChanger ();
 	}
 
 	private void OnLevelWasLoaded (int index)
@@ -94,7 +121,7 @@ public class GameplayManager : MonoBehaviour
 
 		levelText.text = "";
 		startingLevelMessage = "Where am i? Mom? Where are you...";
-		dialogText.text = "Press F to turn on the flashlight. The more you use it. The more power is drained.\n Press P for more tips.";
+		dialogText.text = "Hey. It seems that you are lost. I will help you. Just follow me through this door.";
 
 		levelImage.SetActive (true);
 		StartCoroutine (TypeText ());
@@ -127,7 +154,6 @@ public class GameplayManager : MonoBehaviour
 			yield return 0;
 			yield return new WaitForSeconds (letterPause);
 		}
-
 	}
 
 	private void HideLevelImage ()
@@ -136,13 +162,6 @@ public class GameplayManager : MonoBehaviour
 		dialogObject.GetComponent<Animator> ().SetTrigger ("StartDialog");
 		doingSetup = true;
 		firstDialog = true;
-	}
-
-	public void GameOver ()
-	{
-		levelText.text = "After " + level + " days, you starved.";
-		levelImage.SetActive (true);
-		enabled = false;
 	}
 
 	IEnumerator MoveEnemies ()
@@ -166,17 +185,21 @@ public class GameplayManager : MonoBehaviour
 		} else if (Input.GetKeyDown (KeyCode.P) && firstDialog) {
 			if (doingSetup) {
 				doingSetup = false;
-				int tips = Random.Range (0, 5);
+				int tips = Random.Range (0, 7);
 				if (tips == 0) {
-					nextdialogText = "Press F to turn on the flashlight. The more you use it. The more power is drained.";
+					nextdialogText = "When you find the flashlight, press F to turn it on.";
 				} else if (tips == 1) {
-					nextdialogText = "Press Esc to exit the game.";
+					nextdialogText = "Pressing Esc means escape and amnesia.";
 				} else if (tips == 2) {
 					nextdialogText = "No more tips, silly!";
 				} else if (tips == 3) {
-					nextdialogText = "NPCs don't exist yet. Sorry.";
+					nextdialogText = "A lot of people get lost in here. Maybe you will find one of them.";
 				} else if (tips == 4) {
-					nextdialogText = "Level templates are in construction. Puzzles, enemies and even more fun...";
+					nextdialogText = "It is not safe here, let's move on.";
+				} else if (tips == 5) {
+					nextdialogText = "Some objects are moveable, some don't.";
+				} else if (tips == 6) {
+					nextdialogText = "Sometimes there are places you can hide in. Press Space to hide.";
 				}
 				nextdialogText += " \nPress P for more tips."; 
 			} else if (!doingSetup) {
@@ -191,18 +214,11 @@ public class GameplayManager : MonoBehaviour
 		//StartCoroutine (MoveEnemies ());
 	}
 
-	void FixedUpdate ()
-	{
-		if (player.pickedFlashlight)
-			BatteryLevelChanger ();
-	}
-
 	void BatteryLevelChanger ()
 	{
 		float flashPowerLevel = player.flashPowerLevel;
 		// Update flashlight range, light collider size and light collider position
 		if (flashPowerLevel > 75) {
-
 			anim.enabled = false;
 			batteryLevel.sprite = batterySprites [0];
 
@@ -253,7 +269,27 @@ public class GameplayManager : MonoBehaviour
 
 	public void GameOverScreen ()
 	{
+		levelText.text = "";
+		startingLevelMessage = "GAME OVER\n\n...mom...where are you...";
 		levelImage.SetActive (true);
 		GameObject.Find ("Canvas").GetComponent<Animator> ().SetTrigger ("GameOver");
+		StartCoroutine (TypeEndingText ());
+		isPlayerDead = true;
+	}
+
+	public void DemoOverScreen ()
+	{
+		levelText.text = "";
+		startingLevelMessage = "GAME \"DEMO\" OVER.\n\nThank you for playing.\n\n\nPress any button...";
+		levelImage.SetActive (true);
+		GameObject.Find ("Canvas").GetComponent<Animator> ().SetTrigger ("GameOver");
+		StartCoroutine (TypeEndingText ());
+		isPlayerDead = true;
+	}
+
+	public void ReturnToMenu ()
+	{
+		SoundManager.instance.StopPlaying ();
+		SceneManager.LoadScene (0);
 	}
 }

@@ -11,11 +11,13 @@ public class PlayerSeeker : MonoBehaviour
 
 	private Vector3 targetV;
 	private Vector3 targetLastV;
+	private Vector3 myV;
 	private bool following = false;
 	private Grid_Manager gridManager;
 	private bool visible = false;
 
 	private HeroPlayerController hero;
+	int seekTime = 0;
 
 	void Awake ()
 	{
@@ -52,6 +54,22 @@ public class PlayerSeeker : MonoBehaviour
 			GetComponent<SpriteRenderer> ().enabled = false;
 		}
 		visible = false;
+
+		if (seekTime == 0) {
+			StartCoroutine (Seek ());
+		}
+
+		if (seekTime > 3) {
+			PathRequest_Manager.RequestPath (transform.position, myV, OnPathFound);
+		}
+	}
+
+	IEnumerator Seek ()
+	{
+		for (int i = 0; i < 3; i++) {
+			seekTime += 1;
+			yield return new WaitForSeconds (1);
+		}
 	}
 
 	public void OnPathFound (Vector3[] newPath, bool pathSuccessful)
@@ -68,6 +86,7 @@ public class PlayerSeeker : MonoBehaviour
 	IEnumerator FollowPath ()
 	{
 		targetIndex = 0;
+		seekTime = 0;
 		Vector3 currentWaypoint = path [0];
 
 		while (targetIndex != path.Length) {
@@ -106,6 +125,7 @@ public class PlayerSeeker : MonoBehaviour
 
 	private void OnTriggerEnter (Collider other)
 	{
+		myV = this.gameObject.transform.position;
 		if (other.tag == "Hero_Ambient") {
 			if (!following && !targetLastV.Equals (targetV)) {
 				visible = true;

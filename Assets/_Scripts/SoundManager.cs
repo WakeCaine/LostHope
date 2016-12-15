@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
 	public AudioSource efxSource;
 	public AudioSource musicSource;
+	public AudioSource backgroundSource;
 	public static SoundManager instance = null;
 
 	public float lowPitchRange = .95f;
@@ -39,16 +41,22 @@ public class SoundManager : MonoBehaviour
 				efxSource.Stop ();
 			}
 		}
+
+		if (SceneManager.GetActiveScene ().name.Equals ("MainMenu") && backgroundSource.isPlaying) {
+			backgroundSource.Stop ();
+		}
 	}
 
 	void PlayAmbient ()
 	{
-		if (!musicSource.isPlaying) {
-			counterSeconds += 1;
-			if (counterSeconds == randomizeTimePlaying) {
-				musicSource.Play ();
-				randomizeTimePlaying = Random.Range (20, 40);
-				counterSeconds = 0;
+		if (!SceneManager.GetActiveScene ().name.Equals ("MainMenu")) {
+			if (!musicSource.isPlaying) {
+				counterSeconds += 1;
+				if (counterSeconds == randomizeTimePlaying) {
+					musicSource.Play ();
+					randomizeTimePlaying = Random.Range (20, 40);
+					counterSeconds = 0;
+				}
 			}
 		}
 	}
@@ -57,6 +65,12 @@ public class SoundManager : MonoBehaviour
 	{
 		efxSource.clip = clip;
 		efxSource.Play ();
+	}
+
+	public void StopPlaying ()
+	{
+		efxSource.Stop ();
+		musicSource.Stop ();
 	}
 
 	public void RandomizeSfx (float volume, float pitch, bool footsteps, bool random, params AudioClip[] clips)
