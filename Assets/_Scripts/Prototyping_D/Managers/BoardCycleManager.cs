@@ -559,14 +559,18 @@ public class BoardCycleManager : MonoBehaviour
 		stackOfTemplates.Push (GenerateTemplate (0));
 		currentLevelTemplate++;
 		//----------------------------------
-		stackOfTemplates.Push (GenerateTemplate (5));
-		currentLevelTemplate++;
-		stackOfTemplates.Push (GenerateTemplate (4));
-		currentLevelTemplate++;
-		stackOfTemplates.Push (GenerateTemplate (3));
-		currentLevelTemplate++;
-		stackOfTemplates.Push (GenerateTemplate (2));
-		currentLevelTemplate++;
+		List<int> stacking = new List<int> ();
+
+		for (int i = 0; i < 4; i++) {
+			stacking.Add (i + 2);
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int newT = Random.Range (0, stacking.Count);
+			stackOfTemplates.Push (GenerateTemplate (stacking [newT]));
+			stacking.RemoveAt (newT);
+			currentLevelTemplate++;
+		}
 		stackOfTemplates.Push (GenerateTemplate (1));
 		currentLevelTemplate++;
 		stackOfTemplates.Push (GenerateTemplate (0));
