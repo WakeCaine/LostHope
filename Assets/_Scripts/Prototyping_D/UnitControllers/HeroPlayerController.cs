@@ -156,7 +156,7 @@ public class HeroPlayerController : MovingObject
 			Invoke ("Restart", restartLevelDelay);
 		} else if (other.tag == "Food") {
 			// Temp battery
-			flashPowerLevel += 20f;
+			flashPowerLevel += 30f;
 
 			if (flashPowerLevel > 100f) {
 				flashPowerLevel = 100f;
@@ -165,7 +165,7 @@ public class HeroPlayerController : MovingObject
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
 			// Temp battery
-			flashPowerLevel += 20f;
+			flashPowerLevel += 30f;
 
 			if (flashPowerLevel > 100f) {
 				flashPowerLevel = 100f;
