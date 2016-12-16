@@ -21,6 +21,7 @@ public class HeroPlayerController : MovingObject
 	public AudioClip door;
 
 	public bool canMove = true;
+	public bool disabledMove = false;
 
 	private SpriteRenderer sprite;
 	private Animator animator;
@@ -28,7 +29,7 @@ public class HeroPlayerController : MovingObject
 	private int food;
 
 	public float flashPowerLevel = 100f;
-	private bool flashLight = false;
+	public bool flashLight = false;
 
 	private float dir = 1;
 	public bool pickedFlashlight = false;
@@ -67,6 +68,8 @@ public class HeroPlayerController : MovingObject
 	// Update is called once per frame
 	void Update ()
 	{
+		if (disabledMove)
+			return;
 		if (!canMove)
 			return;
 		else if (gameManager.doingSetup)

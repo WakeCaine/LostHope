@@ -65,11 +65,17 @@ public class hideAction : MonoBehaviour
 
 		if (playerVisible) {
 
-			girl.SetActive (false);
-		
+			girl.GetComponent<SpriteRenderer>().enabled = false;
+			girl.GetComponent<HeroPlayerController> ().disabledMove = true;
+			girl.transform.GetChild (1).gameObject.SetActive (false);
+			girl.transform.GetChild (2).gameObject.SetActive (false);
+
 		} else {
-			girl.SetActive (true);
-		
+			girl.GetComponent<SpriteRenderer>().enabled = true;
+			girl.GetComponent<HeroPlayerController> ().disabledMove = false;
+			if(girl.GetComponent<HeroPlayerController>().flashLight)
+				girl.transform.GetChild (1).gameObject.SetActive (true);
+				girl.transform.GetChild (2).gameObject.SetActive (true);
 		}
 
 		animator.SetBool ("isOpen", true);
