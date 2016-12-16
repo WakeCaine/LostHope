@@ -49,6 +49,8 @@ public class UIManager : MonoBehaviour
 			button1.SetActive (true);
 			button2.SetActive (true);
 			keySheet.SetActive (false);
+		} else if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
 		}
 
 		if ((Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.UpArrow)) && button1.activeSelf && button2.activeSelf) {
